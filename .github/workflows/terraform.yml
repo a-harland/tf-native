@@ -7,7 +7,8 @@ on:
   pull_request:
 
 jobs:
-  build:
+  terraform:
+    name: "Terraform"
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -15,43 +16,34 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        
-      - name: Bracket check
-        id: bracketcheck
-        run: echo "{\"test\":\"check\"}"
-        shell: bash
-        
-#       - name: Configure gcloud
-#         id: config_gcloud
-#         run: |
-#           echo "$KEY" > key.json
-#           echo "GOOGLE_APPLICATION_CREDENTIALS=key.json" >> $GITHUB_ENV
-#         shell: bash
-#         env:
-#           KEY: ${{ secrets.GCP_SA_KEY }} 
-          
+      - name: Configure gcloud
+        id: config_gcloud
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          version: "latest"
+          service_account_email: ${{ secrets.GCP_SA_EMAIL }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
       - name: Setup Conftest
         uses: artis3n/setup-conftest@v0
-        
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 1.0.10
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
           terraform_wrapper: false
-          
       - name: Terraform Format
         id: fmt
         run: terraform fmt -check
-        
+      - name: Bracket check
+        id: bracket
+        run: echo "::set-output name=matrix::{\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}"
       - name: Terraform Init
         id: init
         run: terraform init
-        
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
-        
       - name: Terraform Plan
         id: plan
         if: github.event_name == 'pull_request'
@@ -59,11 +51,9 @@ jobs:
           terraform plan -out=tfplan
           terraform show -json tfplan
         continue-on-error: true
-        
       - name: Conftest Labels check
         id: ct_labels
         run: conftest test tfplan.json ../../policy/tags
-        
       - uses: actions/github-script@0.9.0
         if: github.event_name == 'pull_request'
         env:
