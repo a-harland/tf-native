@@ -57,7 +57,7 @@ jobs:
         if: github.event_name == 'pull_request'
         run: | 
           echo "$KEY" > key.json
-          echo "GOOGLE_APPLICATION_CREDENTIALS=key.json" >> $GITHUB_ENV
+          gcloud auth activate-service-account --key-file=key.json
           terraform plan -out=tfplan
           terraform show -json tfplan
         continue-on-error: true
