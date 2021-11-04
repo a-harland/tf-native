@@ -19,8 +19,9 @@ jobs:
       - name: Configure gcloud
         id: config_gcloud
         run: |
-          'echo "$KEY" > key.json' 
+          echo "$KEY" > key.json
           gcloud auth activate-service-account --key-file=key.json
+        shell: bash
         env:
           KEY: ${{ secrets.GCP_SA_KEY }} 
       - name: Setup Conftest
