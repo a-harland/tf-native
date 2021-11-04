@@ -56,9 +56,13 @@ jobs:
         id: plan
         if: github.event_name == 'pull_request'
         run: | 
+          echo "$KEY" > key.json
+          echo "GOOGLE_APPLICATION_CREDENTIALS=key.json" >> $GITHUB_ENV
           terraform plan -out=tfplan
           terraform show -json tfplan
         continue-on-error: true
+        env:
+          KEY: ${{ secrets.GCP_SA_KEY }}
         
       - name: Conftest Labels check
         id: ct_labels
