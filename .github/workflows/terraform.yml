@@ -43,14 +43,11 @@ jobs:
       - name: Terraform Plan
         id: plan
         if: github.event_name == 'pull_request'
-        run: terraform plan -no-color -out=tfplan
+        run: | 
+          terraform plan -no-color -out=tfplan
+          terraform show -json tfplan > tfplan.json
+          cat tfplan.json
         continue-on-error: true
-      - name: Convert Terraform Plan Output
-        id: convert_plan_output
-        run: terraform show -json tfplan > tfplan.json
-      - name: Print plan output
-        id: print_plan
-        run: cat tfplan.json
       - name: Conftest Labels check
         id: ct_labels
         run: conftest test tfplan.json ../../policy/tags
