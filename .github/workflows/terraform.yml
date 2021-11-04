@@ -39,10 +39,10 @@ jobs:
         continue-on-error: true
       - name: Terraform Plan Output
         id: plan_output
-        run: echo ${{ steps.plan }} >> tfplan.txt
+        run: echo ${{ steps.plan }} > tfplan.txt
       - name: Terraform Plan Output
         id: print_plan_output
-        run: cat .tfplan
+        run: cat tfplan.txt
       - name: Convert Terraform Plan Output
         id: convert_plan_output
         run: terraform show -json ./tfplan.txt > tfplan.json
