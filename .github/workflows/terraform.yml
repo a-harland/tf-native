@@ -9,7 +9,7 @@ on:
 jobs:
   terraform:
     name: "Terraform"
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./envs/tst
@@ -24,6 +24,8 @@ jobs:
           export_default_credentials: true
       - name: Setup Conftest
         uses: artis3n/setup-conftest@v0
+      - name: Checkout
+        uses: actions/checkout@v1
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
