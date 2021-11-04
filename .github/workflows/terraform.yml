@@ -8,25 +8,12 @@ on:
 
 jobs:
   terraform:
-    name: "Terraform"
+    name: "Test"
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./envs/tst
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Configure gcloud
-        id: config_gcloud
-        uses: google-github-actions/setup-gcloud@master
-        with:
-          version: "latest"
-          service_account_email: ${{ secrets.GCP_SA_EMAIL }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
       - name: Print
         id: echo
-        run: echo "{ }"
+        run: echo { }
       - name: Try
         id: try
         run: echo "::set-output name=matrix::{\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}"
