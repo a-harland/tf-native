@@ -39,13 +39,13 @@ jobs:
         continue-on-error: true
       - name: Terraform Plan Output
         id: plan_output
-        run: echo ${{ steps.plan }} >> .tfplan
+        run: echo ${{ steps.plan }} >> tfplan.txt
       - name: Terraform Plan Output
         id: print_plan_output
         run: cat .tfplan
       - name: Convert Terraform Plan Output
         id: convert_plan_output
-        run: terraform show -json ./.tfplan > tfplan.json
+        run: terraform show -json ./tfplan.txt > tfplan.json
       - name: Conftest Labels check
         id: ct_labels
         run: conftest test tfplan.json ../../policy/tags
