@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Bracket check
         id: bracketprint
-        run: echo "{ test: json }"
+        run: echo "{\"test\":\"json\"}"
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@master
         with:
