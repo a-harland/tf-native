@@ -16,5 +16,5 @@ labels_contain_minimum_set[i] = resources {
 deny[msg] {
     resources := labels_contain_minimum_set[_]
     resources != []
-    msg := sprintf("Invalid tags (missing minimum required labels) for the following resources: %v", [resources])
+    msg := sprintf("Missing required labels for the following resources: %v", [resources])
 }

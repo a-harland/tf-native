@@ -58,8 +58,17 @@ jobs:
       - name: Conftest Labels check
         id: ct_labels
         run: conftest test tfplan.json -p ../../policy/metadata
+      
+      - uses: actions/github-script@v5
+        with:
+          script: |
+            github.rest.pulls.listReviews({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.pulls.pull_number
+            })
 
-      - uses: actions/github-script@0.9.0
+      - uses: actions/github-script@v5
         if: github.event_name == 'pull_request'
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
