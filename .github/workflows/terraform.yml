@@ -7,18 +7,20 @@ on:
   pull_request:
 
 jobs:
-  terraform:
-    name: "Terraform"
-    runs-on: ubuntu-18.04
+  build:
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./envs/tst
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        
       - name: Bracket check
         id: bracketcheck
         run: echo "{\"test\":\"check\"}"
+        shell: bash
+        
       - name: Configure gcloud
         id: config_gcloud
         run: |
@@ -27,27 +29,34 @@ jobs:
         shell: bash
         env:
           KEY: ${{ secrets.GCP_SA_KEY }} 
+          
       - name: Setup Conftest
         uses: artis3n/setup-conftest@v0
+        
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 1.0.10
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
           terraform_wrapper: false
+          
       - name: Terraform Format
         id: fmt
         run: terraform fmt -check
+        
       - name: Bracket check
         id: bracket
         shell: bash
         run: echo "::set-output name=matrix::{\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}"
+      
       - name: Terraform Init
         id: init
         run: terraform init
+        
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
+        
       - name: Terraform Plan
         id: plan
         if: github.event_name == 'pull_request'
@@ -56,9 +65,11 @@ jobs:
           terraform show -json tfplan
         continue-on-error: true
         shell: bash
+        
       - name: Conftest Labels check
         id: ct_labels
         run: conftest test tfplan.json ../../policy/tags
+        
       - uses: actions/github-script@0.9.0
         if: github.event_name == 'pull_request'
         env:
