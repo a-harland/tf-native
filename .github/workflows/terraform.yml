@@ -35,9 +35,6 @@ jobs:
       - name: Terraform Format
         id: fmt
         run: terraform fmt -check
-      - name: Bracket check
-        id: bracket
-        run: echo "::set-output name=matrix::{\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}"
       - name: Terraform Init
         id: init
         run: terraform init
@@ -49,7 +46,7 @@ jobs:
         if: github.event_name == 'pull_request'
         run: | 
           terraform plan -out=tfplan
-          terraform show -json tfplan
+          terraform show -json tfplan > tfplan.json
         continue-on-error: true
       - name: Conftest Labels check
         id: ct_labels
