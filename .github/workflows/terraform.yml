@@ -44,7 +44,7 @@ jobs:
         id: plan
         if: github.event_name == 'pull_request'
         run: | 
-          terraform plan -out=tfplan
+          terraform plan -json -out=tfplan
           terraform show -json tfplan
         continue-on-error: true
       - name: Conftest Labels check
