@@ -16,13 +16,21 @@ terraform {
   }
 }
 
+provider "google" {
+  project = "blue-dog-piano"
+}
+
+provider "google-beta" {
+  project = "blue-dog-piano"
+}
+
 locals {
   project_id = "tf-native"
 }
 
 module "iam" {
   source               = "../../modules/iam"
-  service_account_name = "spi"
+  service_account_name = "spi-service-account"
 }
 
 module "notification" {
