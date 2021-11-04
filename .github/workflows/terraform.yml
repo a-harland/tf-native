@@ -65,7 +65,7 @@ jobs:
             github.rest.pulls.listReviews({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              pull_number: context.pulls.pull_number
+              pull_number: github.event.number
             })
 
       - uses: actions/github-script@v5
