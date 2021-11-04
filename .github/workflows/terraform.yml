@@ -37,21 +37,6 @@ jobs:
         if: github.event_name == 'pull_request'
         run: terraform plan -no-color
         continue-on-error: true
-      - name: Terraform Plan Output
-        id: print_plan
-        run: echo ${{ steps.plan }}
-      - name: Terraform Plan Output
-        id: plan_output
-        run: echo ${{ steps.plan }} > tfplan
-      - name: Terraform Plan Output
-        id: print_plan_output
-        run: cat tfplan
-      - name: Convert Terraform Plan Output
-        id: convert_plan_output
-        run: terraform show -json ./tfplan > tfplan.json
-      - name: Conftest Labels check
-        id: ct_labels
-        run: conftest test tfplan.json ../../policy/tags
       - uses: actions/github-script@0.9.0
         if: github.event_name == 'pull_request'
         env:
