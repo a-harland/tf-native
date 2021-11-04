@@ -16,9 +16,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: configure gcloud
+      - name: Configure gcloud
         id: config_gcloud
-        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        uses: google-github-actions/setup-gcloud@master
         with:
           version: "latest"
           service_account_email: ${{ secrets.GCP_SA_EMAIL }}
