@@ -25,16 +25,7 @@ jobs:
       - name: Setup Conftest
         uses: artis3n/setup-conftest@v0
       - name: Checkout
-        uses: actions/checkout@v1
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 1.0.10
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-          terraform_wrapper: false
-      - name: Terraform Format
-        id: fmt
-        run: terraform fmt -check
+        uses: actions/checkout@v2
       - name: Bracket check
         id: bracket
         run: echo "::set-output name=matrix::{\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}"
