@@ -19,8 +19,10 @@ jobs:
       - name: Configure gcloud
         id: config_gcloud
         run: |
-          echo "${{ secrets.GCP_SA_KEY }}" > key.json
+          'echo "$KEY" > key.json' 
           gcloud auth activate-service-account --key-file=key.json
+        env:
+          KEY: ${{ secrets.GCP_SA_KEY }} 
       - name: Setup Conftest
         uses: artis3n/setup-conftest@v0
       - name: Setup Terraform
