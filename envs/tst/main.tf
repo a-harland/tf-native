@@ -15,3 +15,18 @@ terraform {
     }
   }
 }
+
+locals {
+  project_id = "tf-native"
+}
+
+module "iam" {
+  source = "../../modules/iam"
+  name   = "spi"
+}
+
+module "notification" {
+  source       = "../../modules/notifications"
+  project_id   = local.project_id
+  publisher_sa = module.iam.output.service_account_email
+}
