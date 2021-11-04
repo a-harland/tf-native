@@ -25,7 +25,7 @@ provider "google-beta" {
 }
 
 locals {
-  project_id = "tf-native"
+  project_id = "blue-dog-piano"
 }
 
 module "iam" {
