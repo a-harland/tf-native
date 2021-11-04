@@ -21,12 +21,13 @@ locals {
 }
 
 module "iam" {
-  source = "../../modules/iam"
-  name   = "spi"
+  source               = "../../modules/iam"
+  service_account_name = "spi"
 }
 
 module "notification" {
   source       = "../../modules/notifications"
   project_id   = local.project_id
-  publisher_sa = module.iam.output.service_account_email
+  name         = "ccf"
+  publisher_sa = module.iam.service_account_email
 }

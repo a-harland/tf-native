@@ -4,7 +4,7 @@ resource "google_pubsub_topic" "notifications" {
 
 resource "google_pubsub_topic_iam_member" "member" {
   project = var.project_id
-  topic   = resource.google_pubsub_topic.notification
+  topic   = resource.google_pubsub_topic.notifications
   role    = "roles/pubsub.publisher"
   member  = var.publisher_sa
 }
