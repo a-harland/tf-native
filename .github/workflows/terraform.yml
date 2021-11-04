@@ -14,8 +14,6 @@ jobs:
       run:
         working-directory: ./envs/tst
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
       - name: Bracket check
         id: bracketprint
         run: echo "{\"test\":\"json\"}"
@@ -30,6 +28,8 @@ jobs:
         run: echo "{ }"
       - name: Setup Conftest
         uses: artis3n/setup-conftest@v0
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
