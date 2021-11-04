@@ -21,14 +21,14 @@ jobs:
         run: echo "{\"test\":\"check\"}"
         shell: bash
         
-      - name: Configure gcloud
-        id: config_gcloud
-        run: |
-          echo "$KEY" > key.json
-          echo "GOOGLE_APPLICATION_CREDENTIALS=key.json" >> $GITHUB_ENV
-        shell: bash
-        env:
-          KEY: ${{ secrets.GCP_SA_KEY }} 
+#       - name: Configure gcloud
+#         id: config_gcloud
+#         run: |
+#           echo "$KEY" > key.json
+#           echo "GOOGLE_APPLICATION_CREDENTIALS=key.json" >> $GITHUB_ENV
+#         shell: bash
+#         env:
+#           KEY: ${{ secrets.GCP_SA_KEY }} 
           
       - name: Setup Conftest
         uses: artis3n/setup-conftest@v0
@@ -44,11 +44,6 @@ jobs:
         id: fmt
         run: terraform fmt -check
         
-      - name: Bracket check
-        id: bracket
-        shell: bash
-        run: echo "::set-output name=matrix::{\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}"
-      
       - name: Terraform Init
         id: init
         run: terraform init
@@ -64,7 +59,6 @@ jobs:
           terraform plan -out=tfplan
           terraform show -json tfplan
         continue-on-error: true
-        shell: bash
         
       - name: Conftest Labels check
         id: ct_labels
