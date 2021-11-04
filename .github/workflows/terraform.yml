@@ -20,12 +20,11 @@ jobs:
         id: config_gcloud
         run: |
           echo "$KEY" > key.json
-          key.json >> $GOOGLE_APPLICATION_CREDENTIALS
+          echo "GOOGLE_APPLICATION_CREDENTIALS=key.json" >> $GITHUB_ENV
           gcloud auth activate-service-account --key-file=key.json
         shell: bash
         env:
           KEY: ${{ secrets.GCP_SA_KEY }} 
-          GOOGLE_APPLICATION_CREDENTIALS: key.json
       - name: Setup Conftest
         uses: artis3n/setup-conftest@v0
       - name: Setup Terraform
