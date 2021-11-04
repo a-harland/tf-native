@@ -1,5 +1,12 @@
 resource "google_pubsub_topic" "notifications" {
-  name = "spi-notification-topic-${var.name}"
+  project = var.project_id
+  name    = "spi-notification-topic-${var.name}"
+  pull_subscriptions = [
+    {
+      name                 = "pull"
+      ack_deadline_seconds = 20
+    }
+  ]
 }
 
 resource "google_pubsub_topic_iam_member" "member" {
