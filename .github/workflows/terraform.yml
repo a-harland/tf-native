@@ -47,7 +47,7 @@ jobs:
         continue-on-error: true
       - name: Convert Terraform Plan Output
         id: convert_plan_output
-        run: terraform show -json tfplan > tfplan.json
+        run: terraform show -json ./tfplan > tfplan.json
       - name: Print plan output
         id: print_plan
         run: cat tfplan.json
