@@ -15,3 +15,27 @@ terraform {
     }
   }
 }
+
+provider "google" {
+  project = "blue-dog-piano"
+}
+
+provider "google-beta" {
+  project = "blue-dog-piano"
+}
+
+locals {
+  project_id = "tf-native"
+}
+
+module "iam" {
+  source               = "../../modules/iam"
+  service_account_name = "spi-service-account"
+}
+
+module "notification" {
+  source       = "../../modules/notifications"
+  project_id   = local.project_id
+  name         = "ccf"
+  publisher_sa = module.iam.service_account_email
+}
