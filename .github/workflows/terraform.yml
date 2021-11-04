@@ -56,13 +56,9 @@ jobs:
         id: plan
         if: github.event_name == 'pull_request'
         run: | 
-          echo "$KEY" > key.json
-          gcloud auth activate-service-account --key-file=key.json
           terraform plan -out=tfplan
           terraform show -json tfplan
         continue-on-error: true
-        env:
-          KEY: ${{ secrets.GCP_SA_KEY }}
         
       - name: Conftest Labels check
         id: ct_labels
