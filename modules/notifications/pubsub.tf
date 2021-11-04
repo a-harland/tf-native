@@ -6,5 +6,5 @@ resource "google_pubsub_topic_iam_member" "member" {
   project = var.project_id
   topic   = resource.google_pubsub_topic.notifications.id
   role    = "roles/pubsub.publisher"
-  member  = var.publisher_sa
+  member  = "serviceAccount:${var.publisher_sa}"
 }
