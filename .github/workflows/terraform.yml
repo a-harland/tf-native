@@ -19,7 +19,7 @@ jobs:
       - name: Configure gcloud
         id: config_gcloud
         run: |
-          echo ${{ secrets.GCP_SA_KEY }} > key.json
+          echo "${{ secrets.GCP_SA_KEY }}" > key.json
           gcloud auth activate-service-account --key-file=key.json
       - name: Setup Conftest
         uses: artis3n/setup-conftest@v0
