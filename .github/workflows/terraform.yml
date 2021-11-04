@@ -55,7 +55,16 @@ jobs:
           terraform plan -out=tfplan
           terraform show -json tfplan > tfplan.json
         continue-on-error: true
-
+      
+      - name: Check location
+        id: location
+        run: | 
+          ls -l
+          cd ..
+          ls -l
+          cd ..
+          ls -l
+  
       - name: Conftest Labels check
         id: ct_labels
         run: conftest test tfplan.json ../../policy/metadata
