@@ -19,14 +19,6 @@ jobs:
       - name: Bracket check
         id: bracketprint
         run: echo "{ }"
-      - name: Configure gcloud
-        id: gcloud
-        uses: google-github-actions/setup-gcloud@v0.2.1
-        with:
-          version: "361.0.0"
-          service_account_email: ${{ secrets.GCP_SA_EMAIL }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
       - name: Bracket check
         id: bracket
         run: echo "{ }"
