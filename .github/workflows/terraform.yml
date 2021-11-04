@@ -23,7 +23,6 @@ jobs:
         id: config_gcloud
         run: |
           echo "$KEY" > key.json
-          echo "GOOGLE_APPLICATION_CREDENTIALS=key.json" >> $GITHUB_ENV
         shell: bash
         env:
           KEY: ${{ secrets.GCP_SA_KEY }} 
