@@ -76,7 +76,10 @@ jobs:
 #           policy: ../../policy/metadata
       - name: Conftest Labels check
         id: ct
-        run: conftest test --policy ../../policy/metadata tfplan.json
+        working-directory: ./envs/tst
+        run: |
+          cat tfplan.json
+          conftest test --policy ../../policy/metadata tfplan.json
   
       - name: Conftest Labels check
         id: ct_labels
