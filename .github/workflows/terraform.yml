@@ -62,7 +62,7 @@ jobs:
         run: terraform show -json tfplan > tfplan.json
           
       - name: Compliance Metadata check
-        id: compliance_label_check
+        id: compliance_metadata_check
         run: conftest test --parser json --policy ../../policy/metadata tfplan.json
         
 #       - name: Compliance IAM check
@@ -130,7 +130,7 @@ jobs:
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
             #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
             #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
-            #### Terraform Metadata Check 📖\`${{ steps.ct_labels.outcome }}\`
+            #### Terraform Metadata Check 📖\`${{ steps.compliance_metadata_check.outcome }}\`
             <details><summary>Show Plan</summary>
             \`\`\`\n
             ${process.env.PLAN}
