@@ -57,7 +57,7 @@ jobs:
         working-directory: ./envs/tst
         if: github.event_name == 'pull_request'
         run: | 
-          terraform plan -out=tfplan
+          terraform plan -no-color -out=tfplan
           terraform show -json tfplan > tfplan.json
           cat tfplan.json
         continue-on-error: true
