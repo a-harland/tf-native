@@ -57,7 +57,7 @@ jobs:
           terraform plan -no-color -out=tfplan
           echo '::set-output name=TFPLAN::$(terraform show -json tfplan)'
           terraform show -json tfplan > plan.json
-          conftest test --policy ../../policy/metadata plan.json
+          echo "$(<plan.json)"
         continue-on-error: true
   
       - name: Conftest Labels check
