@@ -67,7 +67,7 @@ jobs:
         id: convert
         working-directory: ./envs/tst
         run: | 
-          echo "${{fromJson(steps.plan.outputs.planJson)}}"
+          echo ${{fromJson(steps.plan.outputs.planJson)}}
         
       - name: test
         uses: instrumenta/conftest-action@master
