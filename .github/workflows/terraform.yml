@@ -9,7 +9,7 @@ on:
 jobs:
   terraform:
     name: "Terraform"
-    runs-on: ubuntu-18.04
+    runs-on: macos-10.15
     defaults:
       run:
         shell: bash
@@ -17,10 +17,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       
-#       - name: Setup Conftest
-#         uses: artis3n/setup-conftest@v0
-#         with:
-#           conftest_version: 0.28.3
+      - name: Setup Conftest
+        uses: artis3n/setup-conftest@v0
+        with:
+          conftest_version: 0.28.3
         
       - name: Configure gcloud
         id: config_gcloud
@@ -67,19 +67,19 @@ jobs:
         id: convert
         working-directory: ./envs/tst
         run: | 
-          echo ${{fromJson(steps.plan.outputs.planJson)}}
+          echo ${{fromJson(steps.plan.outputs.planJson)}} > test.json
         
-      - name: test
-        uses: instrumenta/conftest-action@master
-        with:
-          files: ./envs/tst/test.json
-          policy: ../../policy/metadata
+#       - name: test
+#         uses: instrumenta/conftest-action@master
+#         with:
+#           files: ./envs/tst/test.json
+#           policy: ../../policy/metadata
   
-#       - name: Conftest Labels check
-#         id: ct_labels
-#         run: |
-#           ls -l
-#           conftest test --policy ../../policy/metadata tfplan.json
+      - name: Conftest Labels check
+        id: ct_labels
+        run: |
+          ls -l
+          conftest test --policy ../../policy/metadata test.json
         
       - name: Request IAM Approval
         uses: actions/github-script@v5
