@@ -33,7 +33,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: ${{ github.event.number }},
-              reviewers: [asaharland]
+              reviewers: ["asaharland"]
             })
           
       - name: Setup Conftest
