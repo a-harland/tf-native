@@ -61,7 +61,7 @@ jobs:
           terraform show -no-color -json tfplan
         continue-on-error: true
         
-      - uses: DamianReeves/write-file-action@v1
+      - uses: DamianReeves/write-file-action@v1.0
         with:
           path: ./envs/tst/tfplan.json
           contents: |
