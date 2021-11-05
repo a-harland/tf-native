@@ -59,13 +59,14 @@ jobs:
         run: | 
           terraform plan -no-color -out=tfplan
           terraform show -json tfplan > tfplan.json
-          ls -l
+          echo "${{fromJson($(cat tfplan.json))}}"
+          echo "${{fromJson( $(cat tfplan.json) )}}" > test.json
         continue-on-error: true
         
       - name: test
         uses: instrumenta/conftest-action@master
         with:
-          files: ./envs/tst/tfplan.json
+          files: ./envs/tst/test.json
           policy: ../../policy/metadata
   
 #       - name: Conftest Labels check
