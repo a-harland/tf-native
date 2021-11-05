@@ -59,7 +59,7 @@ jobs:
         run: | 
           terraform plan -no-color -out=tfplan
           terraform show -no-color -json tfplan > tmp.json
-          tail -n +1 tmp.json > tfplan.json
+          tail -n +2 tmp.json > tfplan.json
         continue-on-error: true
         
       - name: Conftest Labels check
