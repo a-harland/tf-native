@@ -65,9 +65,9 @@ jobs:
         id: compliance_metadata_check
         run: conftest test --parser json --policy ../../policy/metadata tfplan.json
         
-#       - name: Compliance IAM check
-#         id: compliance_iam_check
-#         run: conftest test --parser json --policy ../../policy/metadata tfplan.json
+      - name: Compliance IAM check
+        id: compliance_iam_check
+        run: conftest test --parser json --policy ../../policy/iam tfplan.json
         
       - name: Request IAM Approval
         uses: actions/github-script@v5
@@ -126,11 +126,15 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            const output = `### Terraform Checks\`
+            #### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
             #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
-            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
-            #### Terraform Metadata Check 📖\`${{ steps.compliance_metadata_check.outcome }}\`
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`\
+            ### ******************************************************\\
+            ### Compliance Checks\`
+            #### Compliance Metadata Check \`${{ steps.compliance_metadata_check.outcome }}\`
+            #### Compliance IAM Check \`${{ steps.compliance_iam_check.outcome }}\`
             <details><summary>Show Plan</summary>
             \`\`\`\n
             ${process.env.PLAN}
