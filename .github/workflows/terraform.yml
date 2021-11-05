@@ -39,12 +39,12 @@ jobs:
       - uses: actions/github-script@v5
         with:
           script: |
-           github.rest.pulls.requestReviewers({
+           const reviews = await github.rest.pulls.listReviews({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: ${{ github.event.number }},
-              reviewers: ["asaharland"]
             })
+           console.log(reviews);
           
       - name: Setup Conftest
         uses: artis3n/setup-conftest@v0
