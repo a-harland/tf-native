@@ -26,29 +26,6 @@ jobs:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
           
-      - uses: actions/github-script@v5
-        with:
-          script: |
-           github.rest.pulls.requestReviewers({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: ${{ github.event.number }},
-              reviewers: ["asaharland"]
-            })
-        
-      - uses: actions/github-script@v5
-        with:
-          script: |
-           const reviews = await github.rest.pulls.listReviews({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: ${{ github.event.number }},
-            })
-           
-           reviews.data.forEach(review => {
-             console.log(review.user);
-           });
-          
       - name: Setup Conftest
         uses: artis3n/setup-conftest@v0
 
@@ -81,6 +58,38 @@ jobs:
       - name: Conftest Labels check
         id: ct_labels
         run: conftest test tfplan.json -p ../../policy/metadata
+        
+      - name: Request IAM Approval
+        uses: actions/github-script@v5
+        with:
+          script: |
+           github.rest.pulls.requestReviewers({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: ${{ github.event.number }},
+              reviewers: ["asaharland"]
+            })
+        
+      - name: Check IAM Approval
+        uses: actions/github-script@v5
+        with:
+          script: |
+           const reviews = await github.rest.pulls.listReviews({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: ${{ github.event.number }},
+            })
+           
+           reviews.data.forEach(review => {
+             if (review.user.login === "asaharland") {
+               if (review.state.toUpperCase() === "APPROVED") {
+                 console.log("IAM changes approved.");
+               }
+             } else {
+               // Fail checks.
+             }
+             console.log(review.user);
+           });
       
       - uses: actions/github-script@v5
         with:
@@ -103,6 +112,7 @@ jobs:
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
             #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
             #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+            #### Terraform Metadata Checks Plan 📖\`${{ steps.ct_labels.outcome }}\`
             <details><summary>Show Plan</summary>
             \`\`\`\n
             ${process.env.PLAN}
