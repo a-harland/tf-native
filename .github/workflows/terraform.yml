@@ -58,16 +58,10 @@ jobs:
         if: github.event_name == 'pull_request'
         run: | 
           terraform plan -no-color -out=tfplan
-          terraform show -no-color -json tfplan
+          terraform show -no-color -json tfplan > tfplan.json
+          cat tfplan.json
         continue-on-error: true
-        
-      - uses: DamianReeves/write-file-action@v1.0
-        with:
-          path: ./envs/tst/tfplan.json
-          contents: |
-            terraform show -no-color -json tfplan
-          write-mode: overwrite
-          
+    
       - name: Terraform Plan
         id: checkfile
         working-directory: ./envs/tst
