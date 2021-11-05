@@ -60,9 +60,15 @@ jobs:
           terraform plan -no-color -out=tfplan
           terraform show -json tfplan > tfplan.json
           content=`cat tfplan.json`
-          echo "${{fromJson($content)}}"
-          echo "${{fromJson( $content )}}" > test.json
+          echo "::set-output name=planJson::$content"
         continue-on-error: true
+        
+      - name: Terraform Convert
+        id: convert
+        working-directory: ./envs/tst
+        run: | 
+          echo "${{fromJson(steps.plan.outputs.planJson)}}" > test.json
+          file --mime-type test.json
         
       - name: test
         uses: instrumenta/conftest-action@master
