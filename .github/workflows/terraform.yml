@@ -64,10 +64,10 @@ jobs:
         id: ct_labels
         run: |
           ls -l
-          echo "${{ steps.plan.outputs.TFPLAN }}" > tfplan.json
-          cat tfplan.json
-          file --mime-type tfplan.json
-          conftest test --parser json --policy ../../policy/metadata tfplan.json
+          echo "${{ steps.plan.outputs.TFPLAN }}" > plan.json
+          cat plan.json
+          file --mime-type plan.json
+          conftest test --parser json --policy ../../policy/metadata plan.json
         
       - name: Request IAM Approval
         uses: actions/github-script@v5
