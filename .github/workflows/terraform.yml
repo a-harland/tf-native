@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-18.04
     defaults:
       run:
-        shell: sh
+        shell: bash
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -60,9 +60,7 @@ jobs:
           terraform plan -no-color -out=tfplan
           terraform show -no-color -json tfplan > tmp.json
           tail -n +2 tmp.json > plan.json
-          file -i plan.json
-          iconv -f US-ASCII -t UTF-16 plan.json > tmplan.json
-          tail -c +3 tmplan.json > tfplan.json
+          iconv -f US-ASCII -t UTF-8 plan.json > tfplan.json
           cat tfplan.json
         continue-on-error: true
         
