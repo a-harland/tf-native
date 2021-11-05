@@ -44,7 +44,9 @@ jobs:
               repo: context.repo.repo,
               pull_number: ${{ github.event.number }},
             })
-           console.log(reviews);
+           reviews.forEach(review -> {
+             console.log(review.user);
+           });
           
       - name: Setup Conftest
         uses: artis3n/setup-conftest@v0
