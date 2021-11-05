@@ -59,8 +59,9 @@ jobs:
         run: | 
           terraform plan -no-color -out=tfplan
           terraform show -json tfplan > tfplan.json
-          echo "${{fromJson($(cat tfplan.json))}}"
-          echo "${{fromJson( $(cat tfplan.json) )}}" > test.json
+          content=`cat tfplan.json`
+          echo "${{fromJson($content)}}"
+          echo "${{fromJson( $content )}}" > test.json
         continue-on-error: true
         
       - name: test
