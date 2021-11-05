@@ -51,15 +51,15 @@ jobs:
         id: plan
         if: github.event_name == 'pull_request'
         run: | 
-          terraform plan -out=tfplan
-          terraform show -json tfplan > tfplan.json
+          terraform plan -no-color -out=tfplan
+          terraform show -json ./tfplan > tfplan.json
         continue-on-error: true
 
       - name: Conftest Labels check
         id: ct_labels
         run: |
           cat tfplan.json
-          conftest test tfplan.json -p ../../policy/metadata
+          conftest test ./tfplan.json --policy ../../policy/metadata
         
       - name: Request IAM Approval
         uses: actions/github-script@v5
@@ -122,7 +122,7 @@ jobs:
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
             #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
             #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
-            #### Terraform Metadata Checks Plan 📖\`${{ steps.ct_labels.outcome }}\`
+            #### Terraform Metadata Check 📖\`${{ steps.ct_labels.outcome }}\`
             <details><summary>Show Plan</summary>
             \`\`\`\n
             ${process.env.PLAN}
