@@ -59,7 +59,7 @@ jobs:
         id: ct_labels
         run: |
           ls -l
-          cat "${{ steps.plan.outputs.TFPLAN }}" | conftest test --policy ../../policy/metadata
+          echo "${{ steps.plan.outputs.TFPLAN }}" | conftest test --policy ../../policy/metadata
         
       - name: Request IAM Approval
         uses: actions/github-script@v5
