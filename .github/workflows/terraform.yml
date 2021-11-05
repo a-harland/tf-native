@@ -16,6 +16,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      
+      - name: Setup Conftest
+        uses: artis3n/setup-conftest@v0
         
       - name: Configure gcloud
         id: config_gcloud
@@ -49,21 +52,14 @@ jobs:
         if: github.event_name == 'pull_request'
         run: | 
           terraform plan -no-color -out=tfplan
-          terraform show -json ./tfplan > tfplan.json
+          echo '::set-output name=TFPLAN::$(cat terraform show -json ./tfplan)'
         continue-on-error: true
   
       - name: Conftest Labels check
         id: ct_labels
         run: |
-          cat tfplan.json
-          ls -l
-          pwd
-  
-      - name: test
-        uses: instrumenta/conftest-action@v0.4.0
-        with:
-          files: /home/runner/work/tf-native/tf-native/envs/tst/tfplan.json
-          policy: ../../policy/metadata
+          echo ${{ steps.plan.outputs.TFPLAN }}" > tfplan.json
+          conftest test ./tfplan.json --policy ../../policy/metadata
         
       - name: Request IAM Approval
         uses: actions/github-script@v5
