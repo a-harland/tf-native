@@ -62,25 +62,24 @@ jobs:
       - name: Terraform Plan
         id: checkfile
         working-directory: ./envs/tst
-        run: terraform show -json tfplan > tfplan.json
+        run: echo ::set-output name=TFPLAN::$(terraform show -json tfplan)
           
-      - name: Terraform Plan
-        id: printfile
-        working-directory: ./envs/tst
-        run: cat tfplan.json      
+#       - name: Terraform Plan
+#         id: printfile
+#         working-directory: ./envs/tst
+#         run: cat tfplan.json      
         
-      - name: test
-        uses: instrumenta/conftest-action@master
-        with:
-          files: ./envs/tst/tfplan.json
-          policy: ./policy/metadata
+#       - name: test
+#         uses: instrumenta/conftest-action@master
+#         with:
+#           files: ./envs/tst/tfplan.json
+#           policy: ./policy/metadata
         
       - name: Conftest Labels check
         id: ct
         working-directory: ./envs/tst
         run: |
-          cat tfplan.json
-          conftest test --parser json --policy ../../policy/metadata tfplan.json
+          echo ${{ steps.checkfile.outputs.TFPLAN }} | conftest test --parser json --policy ../../policy/metadata
         
       - name: Request IAM Approval
         uses: actions/github-script@v5
