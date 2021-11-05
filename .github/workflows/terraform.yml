@@ -63,12 +63,22 @@ jobs:
         uses: actions/github-script@v5
         with:
           script: |
-           github.rest.pulls.requestReviewers({
+           const currentReviewers = await github.rest.pulls.listRequestedReviewers({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: ${{ github.event.number }},
-              reviewers: ["asaharland"]
-            })
+           });
+           if (currentReviewers.data.users.some(e => e.login === 'asaharland')) {
+             console.log("Review already requested.");
+           } else {
+              github.rest.pulls.requestReviewers({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: ${{ github.event.number }},
+                reviewers: ["asaharland"]
+              });
+              console.log("Added IAM reviewer.");
+           }
         
       - name: Check IAM Approval
         uses: actions/github-script@v5
