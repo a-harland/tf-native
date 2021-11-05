@@ -56,21 +56,19 @@ jobs:
         id: plan
         working-directory: ./envs/tst
         if: github.event_name == 'pull_request'
-        run: | 
-          terraform plan -no-color -out=tfplan
+        run: terraform plan -no-color -out=tfplan
         continue-on-error: true
   
       - name: Terraform Plan
         id: show
         working-directory: ./envs/tst
-        run: | 
-          terraform show -json tfplan
+        run: terraform show -json tfplan
     
       - name: Terraform Plan
         id: checkfile
         working-directory: ./envs/tst
         run: | 
-          echo ${{ steps.show.outputs.stdout }} > tfplan.json
+          ${{ steps.show.outputs.stdout }} > tfplan.json
           cat tfplan.json
         
       - name: test
