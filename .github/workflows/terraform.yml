@@ -55,7 +55,7 @@ jobs:
       - name: test
         uses: instrumenta/conftest-action@v0.4.0
         with:
-          files: tfplan.json
+          files: ./tfplan.json
           policy: ../../policy/metadata
 
       - name: Conftest Labels check
@@ -63,7 +63,7 @@ jobs:
         run: |
           cat tfplan.json
           ls -l
-          conftest test tfplan.json --policy ../../policy/metadata
+          conftest test ./tfplan.json --policy ../../policy/metadata
         
       - name: Request IAM Approval
         uses: actions/github-script@v5
