@@ -35,6 +35,16 @@ jobs:
               pull_number: ${{ github.event.number }},
               reviewers: ["asaharland"]
             })
+        
+      - uses: actions/github-script@v5
+        with:
+          script: |
+           github.rest.pulls.requestReviewers({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: ${{ github.event.number }},
+              reviewers: ["asaharland"]
+            })
           
       - name: Setup Conftest
         uses: artis3n/setup-conftest@v0
@@ -77,7 +87,7 @@ jobs:
               repo: context.repo.repo,
               pull_number: ${{ github.event.number }}
             })
-            console.log(reviewers)
+            console.log(reviewers.data.users[0])
 
       - uses: actions/github-script@v5
         if: github.event_name == 'pull_request'
