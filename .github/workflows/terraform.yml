@@ -57,9 +57,61 @@ jobs:
 
       - name: Conftest Labels check
         id: ct_labels
-        run: conftest test tfplan.json -p ../../policy/metadata
+        run: |
+          cat tfplan.json
+          conftest test tfplan.json -p ../../policy/metadata
+        
+      - name: Request IAM Approval
+        uses: actions/github-script@v5
+        with:
+          script: |
+           const currentReviewers = await github.rest.pulls.listRequestedReviewers({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: ${{ github.event.number }},
+           });
+           if (currentReviewers.data.users.some(e => e.login === 'asaharland')) {
+             console.log("Review already requested.");
+           } else {
+              github.rest.pulls.requestReviewers({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: ${{ github.event.number }},
+                reviewers: ["asaharland"]
+              });
+              console.log("Added IAM reviewer.");
+           }
+        
+      - name: Check IAM Approval
+        uses: actions/github-script@v5
+        with:
+          script: |
+           const reviews = await github.rest.pulls.listReviews({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: ${{ github.event.number }},
+            })
+           
+           reviews.data.forEach(review => {
+             if (review.user.login === "asaharland" && review.state.toUpperCase() === "APPROVED") {
+                 console.log("IAM changes approved.");
+             } else {
+               // Fail checks.
+             }
+             console.log(review);
+           });
+      
+      - uses: actions/github-script@v5
+        with:
+          script: |
+            const reviewers = await github.rest.pulls.listRequestedReviewers({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: ${{ github.event.number }}
+            })
+            console.log(reviewers.data.users[0])
 
-      - uses: actions/github-script@0.9.0
+      - uses: actions/github-script@v5
         if: github.event_name == 'pull_request'
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
@@ -70,13 +122,14 @@ jobs:
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
             #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
             #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+            #### Terraform Metadata Checks Plan 📖\`${{ steps.ct_labels.outcome }}\`
             <details><summary>Show Plan</summary>
             \`\`\`\n
             ${process.env.PLAN}
             \`\`\`
             </details>
             *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
-            github.issues.createComment({
+            github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
