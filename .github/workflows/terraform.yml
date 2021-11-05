@@ -9,13 +9,19 @@ on:
 jobs:
   terraform:
     name: "Terraform"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     defaults:
       run:
+        shell: bash
         working-directory: ./envs/tst
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      
+      - name: Setup Conftest
+        uses: artis3n/setup-conftest@v0
+        with:
+          conftest_version: 0.28.3
         
       - name: Configure gcloud
         id: config_gcloud
@@ -25,15 +31,13 @@ jobs:
           service_account_email: ${{ secrets.GCP_SA_EMAIL }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
-          
-      - name: Setup Conftest
-        uses: artis3n/setup-conftest@v0
-
+        
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: 1.0.10
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+          terraform_wrapper: false
 
       - name: Terraform Format
         id: fmt
@@ -50,16 +54,20 @@ jobs:
       - name: Terraform Plan
         id: plan
         if: github.event_name == 'pull_request'
-        run: | 
-          terraform plan -out=tfplan
-          terraform show -json tfplan > tfplan.json
+        run: terraform plan -no-color -out=tfplan
         continue-on-error: true
-
-      - name: Conftest Labels check
-        id: ct_labels
-        run: |
-          cat tfplan.json
-          conftest test tfplan.json -p ../../policy/metadata
+    
+      - name: Terraform Plan
+        id: checkfile
+        run: terraform show -json tfplan > tfplan.json
+          
+      - name: Compliance Metadata check
+        id: compliance_metadata_check
+        run: conftest test --parser json --policy ../../policy/metadata tfplan.json
+        
+#       - name: Compliance IAM check
+#         id: compliance_iam_check
+#         run: conftest test --parser json --policy ../../policy/metadata tfplan.json
         
       - name: Request IAM Approval
         uses: actions/github-script@v5
@@ -122,7 +130,7 @@ jobs:
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
             #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
             #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
-            #### Terraform Metadata Checks Plan 📖\`${{ steps.ct_labels.outcome }}\`
+            #### Terraform Metadata Check 📖\`${{ steps.compliance_metadata_check.outcome }}\`
             <details><summary>Show Plan</summary>
             \`\`\`\n
             ${process.env.PLAN}
