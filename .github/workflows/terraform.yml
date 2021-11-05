@@ -62,7 +62,7 @@ jobs:
       - name: test
         uses: instrumenta/conftest-action@v0.4.0
         with:
-          files: ./tfplan.json
+          files: /home/runner/work/tf-native/tf-native/envs/tst/tfplan.json
           policy: ../../policy/metadata
         
       - name: Request IAM Approval
