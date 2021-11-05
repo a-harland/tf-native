@@ -19,6 +19,8 @@ jobs:
       
       - name: Setup Conftest
         uses: artis3n/setup-conftest@v0
+        with:
+          conftest_version: 0.28.3
         
       - name: Configure gcloud
         id: config_gcloud
