@@ -58,7 +58,7 @@ jobs:
       - name: Conftest Labels check
         id: ct_labels
         run: |
-          echo ${{ steps.plan.outputs.TFPLAN }}" > tfplan.json
+          echo "${{ steps.plan.outputs.TFPLAN }}" > tfplan.json
           conftest test ./tfplan.json --policy ../../policy/metadata
         
       - name: Request IAM Approval
