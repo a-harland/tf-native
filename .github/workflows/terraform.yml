@@ -32,7 +32,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: 1.0.10
+          terraform_version: 1.0.0
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
       - name: Terraform Format
@@ -59,7 +59,8 @@ jobs:
         id: ct_labels
         run: |
           cat tfplan.json
-          conftest test ./tfplan.json --policy ../../policy/metadata
+          ls -l
+          conftest test tfplan.json --policy ../../policy/metadata
         
       - name: Request IAM Approval
         uses: actions/github-script@v5
