@@ -81,10 +81,8 @@ jobs:
             })
            
            reviews.data.forEach(review => {
-             if (review.user.login === "asaharland") {
-               if (review.state.toUpperCase() === "APPROVED") {
+             if (review.user.login === "asaharland" && review.state.toUpperCase() === "APPROVED") {
                  console.log("IAM changes approved.");
-               }
              } else {
                // Fail checks.
              }
