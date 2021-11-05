@@ -63,6 +63,7 @@ jobs:
           file -i plan.json
           iconv -f US-ASCII -t UTF-16 plan.json > tfplan.json
           file -i tfplan.json
+          cat tfplan.json
         continue-on-error: true
         
       - name: test
