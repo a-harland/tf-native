@@ -13,6 +13,7 @@ jobs:
     defaults:
       run:
         working-directory: ./envs/tst
+        shell: bash
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -55,6 +56,8 @@ jobs:
         run: | 
           terraform plan -no-color -out=tfplan
           echo '::set-output name=TFPLAN::$(terraform show -json tfplan)'
+          terraform show -json tfplan > plan.json
+          conftest test --policy ../../policy/metadata plan.json
         continue-on-error: true
   
       - name: Conftest Labels check
@@ -62,6 +65,7 @@ jobs:
         run: |
           ls -l
           echo "${{ steps.plan.outputs.TFPLAN }}" > tfplan.json
+          cat tfplan.json
           conftest test --policy ../../policy/metadata tfplan.json
         
       - name: Request IAM Approval
