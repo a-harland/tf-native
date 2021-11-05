@@ -57,13 +57,18 @@ jobs:
           terraform plan -no-color -out=tfplan
           terraform show -json tfplan > tfplan.json
         continue-on-error: true
+        
+      - name: test
+        uses: instrumenta/conftest-action@master
+        with:
+          files: ./tfplan.json
+          policy: ../../policy/metadata
   
-      - name: Conftest Labels check
-        id: ct_labels
-        run: |
-          ls -l
-          file --mime-type tfplan.json
-          conftest test --policy ../../policy/metadata tfplan.json
+#       - name: Conftest Labels check
+#         id: ct_labels
+#         run: |
+#           ls -l
+#           conftest test --policy ../../policy/metadata tfplan.json
         
       - name: Request IAM Approval
         uses: actions/github-script@v5
