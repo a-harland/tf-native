@@ -68,7 +68,7 @@ jobs:
         id: checkfile
         working-directory: ./envs/tst
         run: | 
-          ${{ steps.show.outputs.stdout }} > tfplan.json
+          echo "${{ steps.show.outputs.stdout }}" > tfplan.json
           cat tfplan.json
         
       - name: test
