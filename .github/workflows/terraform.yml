@@ -9,10 +9,11 @@ on:
 jobs:
   terraform:
     name: "Terraform"
-    runs-on: macos-11
+    runs-on: macos-10.15
     defaults:
       run:
         working-directory: ./envs/tst
+        shell: bash
     steps:
       - name: Checkout
         uses: actions/checkout@v2
