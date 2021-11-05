@@ -13,6 +13,7 @@ jobs:
     defaults:
       run:
         shell: bash
+        working-directory: ./envs/tst
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -40,48 +41,33 @@ jobs:
 
       - name: Terraform Format
         id: fmt
-        working-directory: ./envs/tst
         run: terraform fmt -check
 
       - name: Terraform Init
         id: init
-        working-directory: ./envs/tst
         run: terraform init
 
       - name: Terraform Validate
         id: validate
-        working-directory: ./envs/tst
         run: terraform validate -no-color
 
       - name: Terraform Plan
         id: plan
-        working-directory: ./envs/tst
         if: github.event_name == 'pull_request'
         run: terraform plan -no-color -out=tfplan
         continue-on-error: true
     
       - name: Terraform Plan
         id: checkfile
-        working-directory: ./envs/tst
         run: terraform show -json tfplan > tfplan.json
           
-#       - name: Terraform Plan
-#         id: printfile
-#         working-directory: ./envs/tst
-#         run: cat tfplan.json      
+      - name: Compliance Metadata check
+        id: compliance_label_check
+        run: conftest test --parser json --policy ../../policy/metadata tfplan.json
         
-#       - name: test
-#         uses: instrumenta/conftest-action@master
-#         with:
-#           files: ./envs/tst/tfplan.json
-#           policy: ./policy/metadata
-        
-      - name: Conftest Labels check
-        id: ct
-        working-directory: ./envs/tst
-        run: |
-          cat tfplan.json
-          conftest test --parser json --policy ../../policy/metadata tfplan.json
+#       - name: Compliance IAM check
+#         id: compliance_iam_check
+#         run: conftest test --parser json --policy ../../policy/metadata tfplan.json
         
       - name: Request IAM Approval
         uses: actions/github-script@v5
