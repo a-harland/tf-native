@@ -66,6 +66,7 @@ jobs:
           ls -l
           echo "${{ steps.plan.outputs.TFPLAN }}" > tfplan.json
           cat tfplan.json
+          chmod 755 tfplan.json
           conftest test --parser json --policy ../../policy/metadata tfplan.json
         
       - name: Request IAM Approval
