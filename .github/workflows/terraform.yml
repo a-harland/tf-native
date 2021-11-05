@@ -57,7 +57,9 @@ jobs:
 
       - name: Conftest Labels check
         id: ct_labels
-        run: conftest test tfplan.json -p ../../policy/metadata
+        run: |
+          cat tfplan.json
+          conftest test tfplan.json -p ../../policy/metadata
         
       - name: Request IAM Approval
         uses: actions/github-script@v5
