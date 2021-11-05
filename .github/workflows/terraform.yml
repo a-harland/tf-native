@@ -59,15 +59,14 @@ jobs:
         run: | 
           terraform plan -no-color -out=tfplan
           terraform show -json tfplan > tfplan.json
-          content=`cat tfplan.json`
-          echo "::set-output name=planJson::$content"
         continue-on-error: true
         
-      - name: Terraform Convert
-        id: convert
-        working-directory: ./envs/tst
-        run: | 
-          echo ${{fromJson(steps.plan.outputs.planJson)}} > test.json
+      - name: create-json
+        id: create-json
+        uses: jsdaniell/create-json@1.1.2
+        with:
+          name: "test.json"
+          json: "$(cat tfplan.json)"
         
 #       - name: test
 #         uses: instrumenta/conftest-action@master
@@ -79,6 +78,7 @@ jobs:
         id: ct_labels
         run: |
           ls -l
+          file --mime-type test.json
           conftest test --policy ../../policy/metadata test.json
         
       - name: Request IAM Approval
