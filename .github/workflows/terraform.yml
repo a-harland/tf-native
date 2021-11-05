@@ -67,8 +67,7 @@ jobs:
         id: convert
         working-directory: ./envs/tst
         run: | 
-          echo "${{fromJson(steps.plan.outputs.planJson)}}" > test.json
-          file --mime-type test.json
+          echo "${{fromJson(steps.plan.outputs.planJson)}}"
         
       - name: test
         uses: instrumenta/conftest-action@master
