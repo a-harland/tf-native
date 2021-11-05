@@ -62,7 +62,7 @@ jobs:
       - uses: actions/github-script@v5
         with:
           script: |
-            const reviewers = github.rest.pulls.listRequestedReviewers({
+            const reviewers = await github.rest.pulls.listRequestedReviewers({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: ${{ github.event.number }}
