@@ -62,6 +62,12 @@ jobs:
           tail -n +2 tmp.json > tfplan.json
         continue-on-error: true
         
+      - name: test
+        uses: instrumenta/conftest-action@master
+        with:
+          files: ./envs/tst/tfplan.json
+          policy: ./policy/metadata
+        
       - name: Conftest Labels check
         id: ct
         working-directory: ./envs/tst
