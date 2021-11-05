@@ -60,8 +60,9 @@ jobs:
           terraform plan -no-color -out=tfplan
           terraform show -no-color -json tfplan > tmp.json
           tail -n +2 tmp.json > plan.json
-          file -i tfplan.json
+          file -i plan.json
           iconv -f US-ASCII -t UTF-8//TRANSLIT plan.json -o tfplan.json
+          file -i tfplan.json
         continue-on-error: true
         
       - name: test
