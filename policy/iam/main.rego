@@ -1,20 +1,15 @@
 package main
 
-import data.label_validation
-
-module_address[i] = address {
-    changeset := input.resource_changes[i]
-    address := changeset.address
-}
-
-labels_contain_minimum_set[i] = resources {
-    changeset := input.resource_changes[i]
-    labels := changeset.change.after.labels
-    resources := [resource | resource := module_address[i]; not label_validation.labels_contain_proper_keys(changeset.change.after.labels)]
-}
+block_list = [
+  "_iam_"
+]
 
 deny[msg] {
-    resources := labels_contain_minimum_set[_]
-    resources != []
-    msg := sprintf("Invalid tags (missing minimum required labels) for the following resources: %v", [resources])
+  check_resources(input.resource_changes, block_list)
+  banned := concat(", ", block_list)
+  msg = sprintf("IAM changes require approval from the IAM team: %v", [banned])
+}
+
+check_resources(resources, disallowed_prefixes) {
+  contains(resources[_].type, disallowed_prefixes[_])
 }
