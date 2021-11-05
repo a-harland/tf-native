@@ -36,6 +36,7 @@ jobs:
         with:
           terraform_version: 1.0.10
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+          terraform_wrapper: false
 
       - name: Terraform Format
         id: fmt
@@ -62,7 +63,7 @@ jobs:
       - name: Terraform Plan
         id: checkfile
         working-directory: ./envs/tst
-        run: echo ::set-output name=TFPLAN::$(terraform show -json tfplan)
+        run: terraform show -json tfplan > tfplan.json
           
 #       - name: Terraform Plan
 #         id: printfile
@@ -79,7 +80,8 @@ jobs:
         id: ct
         working-directory: ./envs/tst
         run: |
-          echo ${{ steps.checkfile.outputs.TFPLAN }} | conftest test --parser json --policy ../../policy/metadata
+          cat tfplan.json
+          conftest test --parser json --policy ../../policy/metadata tfplan.json
         
       - name: Request IAM Approval
         uses: actions/github-script@v5
