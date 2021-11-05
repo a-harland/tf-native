@@ -86,7 +86,7 @@ jobs:
              } else {
                // Fail checks.
              }
-             console.log(review.user);
+             console.log(review);
            });
       
       - uses: actions/github-script@v5
