@@ -62,7 +62,7 @@ jobs:
           tail -n +2 tmp.json > plan.json
           file -i plan.json
           iconv -f US-ASCII -t UTF-16 plan.json > tmplan.json
-          tail -c +2 tmplan.json > tfplan.json
+          tail -c +3 tmplan.json > tfplan.json
           cat tfplan.json
         continue-on-error: true
         
