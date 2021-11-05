@@ -52,13 +52,15 @@ jobs:
         if: github.event_name == 'pull_request'
         run: | 
           terraform plan -no-color -out=tfplan
-          echo '::set-output name=TFPLAN::$(cat terraform show -json ./tfplan)'
+          echo '::set-output name=TFPLAN::$(terraform show -json ./tfplan)'
         continue-on-error: true
   
       - name: Conftest Labels check
         id: ct_labels
         run: |
           echo "${{ steps.plan.outputs.TFPLAN }}" > tfplan.json
+          ls -l
+          cat tfplan.json
           conftest test ./tfplan.json --policy ../../policy/metadata
         
       - name: Request IAM Approval
