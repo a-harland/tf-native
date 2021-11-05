@@ -44,7 +44,8 @@ jobs:
               repo: context.repo.repo,
               pull_number: ${{ github.event.number }},
             })
-           reviews.forEach(review => {
+           
+           reviews.data.forEach(review => {
              console.log(review.user);
            });
           
