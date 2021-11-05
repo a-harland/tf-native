@@ -58,7 +58,7 @@ jobs:
         if: github.event_name == 'pull_request'
         run: | 
           terraform plan -no-color -out=tfplan
-          terraform show -json tfplan > tfplan.json
+          terraform show -no-color -json tfplan > tfplan.json
           echo ::set-output name=TFPLAN::$(cat tfplan.json)
         continue-on-error: true
         
@@ -74,6 +74,9 @@ jobs:
 #         with:
 #           files: ./envs/tst/test.json
 #           policy: ../../policy/metadata
+      - name: Conftest Labels check
+        id: ct
+        run: conftest test --policy ../../policy/metadata tfplan.json
   
       - name: Conftest Labels check
         id: ct_labels
