@@ -18,10 +18,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       
-      - name: Setup Conftest
-        uses: artis3n/setup-conftest@v0
-        with:
-          conftest_version: 0.28.3
+#       - name: Setup Conftest
+#         uses: artis3n/setup-conftest@v0
+#         with:
+#           conftest_version: 0.28.3
         
       - name: Configure gcloud
         id: config_gcloud
@@ -35,7 +35,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version: 1.0.0
+          terraform_version: 1.0.10
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
       - name: Terraform Format
