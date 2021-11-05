@@ -59,6 +59,7 @@ jobs:
         run: | 
           terraform plan -no-color -out=tfplan
           terraform show -json tfplan > tfplan.json
+          echo ::set-output name=TFPLAN::$(cat tfplan.json)
         continue-on-error: true
         
       - name: create-json
@@ -66,7 +67,7 @@ jobs:
         uses: jsdaniell/create-json@1.1.2
         with:
           name: "test.json"
-          json: $(cat tfplan.json)
+          json: ${{ steps.plan.outputs.TFPLAN }}
         
 #       - name: test
 #         uses: instrumenta/conftest-action@master
