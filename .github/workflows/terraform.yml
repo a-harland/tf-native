@@ -79,6 +79,7 @@ jobs:
         run: |
           ls -l
           file --mime-type test.json
+          cat test.json
           conftest test --policy ../../policy/metadata test.json
         
       - name: Request IAM Approval
