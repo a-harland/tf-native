@@ -58,7 +58,7 @@ jobs:
         if: github.event_name == 'pull_request'
         run: | 
           terraform plan -no-color -out=tfplan
-          terraform show -json tfplan > tfplan.json
+          echo `terraform show -json tfplan` > tfplan.json
           cat tfplan.json
         continue-on-error: true
     
