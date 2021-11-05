@@ -62,11 +62,12 @@ jobs:
       - uses: actions/github-script@v5
         with:
           script: |
-            github.rest.pulls.listRequestedReviewers({
+            const reviewers = github.rest.pulls.listRequestedReviewers({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: ${{ github.event.number }}
             })
+            console.log(reviewers)
 
       - uses: actions/github-script@v5
         if: github.event_name == 'pull_request'
