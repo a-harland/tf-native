@@ -66,7 +66,7 @@ jobs:
           ls -l
           echo "${{ steps.plan.outputs.TFPLAN }}" > tfplan.json
           cat tfplan.json
-          conftest test --policy ../../policy/metadata tfplan.json
+          conftest test --parser json --policy ../../policy/metadata tfplan.json
         
       - name: Request IAM Approval
         uses: actions/github-script@v5
