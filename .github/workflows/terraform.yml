@@ -73,6 +73,7 @@ jobs:
         uses: actions/github-script@v5
         with:
           script: |
+           // Only do this if the previous step fails
            const currentReviewers = await github.rest.pulls.listRequestedReviewers({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -94,6 +95,7 @@ jobs:
         uses: actions/github-script@v5
         with:
           script: |
+           // Only do this if the IAM check fails
            const reviews = await github.rest.pulls.listReviews({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -101,6 +103,7 @@ jobs:
             })
            
            reviews.data.forEach(review => {
+              console.log(review);
               if (review.user.login === "asaharland" && review.state.toUpperCase() === "APPROVED") {
                 console.log("IAM changes approved.");
                 return;
