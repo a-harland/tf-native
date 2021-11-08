@@ -187,7 +187,8 @@ jobs:
               repo: context.repo.repo,
               pull_number: ${{ github.event.number }},
             })
-           
+           console.log(reviews);
+           console.log(reviews.length);
            if (reviews) {
              reviews.data.forEach(review => {
                 if (review.user.login === "asaharland" & review.state.toUpperCase() !== "APPROVED") {
