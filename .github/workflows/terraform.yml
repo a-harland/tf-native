@@ -182,15 +182,13 @@ jobs:
         id: compliance_iam_check_approval
         uses: actions/github-script@v5
         if: steps.compliance_iam_check.outputs.exitcode != 0
-        continue-on-error: true
         with:
           script: |
            const reviews = await github.rest.pulls.listReviews({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: ${{ github.event.number }},
-            })
-           console.log(reviews.data);
+           });
            if (reviews.data.length > 0) {
              reviews.data.forEach(review => {
                 if (review.user.login === "asaharland" && review.state.toUpperCase() !== "APPROVED") {
