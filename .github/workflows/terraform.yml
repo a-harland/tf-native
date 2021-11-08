@@ -57,8 +57,8 @@ jobs:
       - name: Terraform Plan
         id: output_tfplan
         run: |
-          terraform show -json tfplan > tfplan.json
-          echo ::set-output name=TF_PLAN::$(cat tfplan.json)
+          JSON=$(terraform show -json tfplan)
+          echo "::set-output name=TF_PLAN::${JSON//'%'/'%25'}"
 
       - uses: actions/github-script@v5
         if: github.event_name == 'pull_request'
@@ -114,6 +114,9 @@ jobs:
         run: |
           echo "${{fromJson(needs.terraform.outputs.tf_plan)}}"
           echo ${{fromJson(needs.terraform.outputs.tf_plan)}} > tfplan.json
+          ${{fromJson(needs.terraform.outputs.tf_plan)}} > non_tfplan.json
+          cat tfplan.json
+          cat non_tfplan.json
       
       - name: Compliance Metadata check
         id: compliance_metadata_check
@@ -137,8 +140,6 @@ jobs:
     name: "Compliance IAM Checks"
     needs: terraform
     runs-on: ubuntu-18.04
-    env:
-      TF_PLAN: ${{fromJson(needs.terraform.outputs.tf_plan)}}
     defaults:
       run:
         shell: bash
@@ -153,11 +154,11 @@ jobs:
           conftest_version: 0.28.3
           conftest_wrapper: true
 
-      - name: Save TF Plan
-        id: save_tf_plan
-        run: |
-          echo "${{env.TF_PLAN}}"
-          echo "${{env.TF_PLAN}}" > tfplan.json
+#       - name: Save TF Plan
+#         id: save_tf_plan
+#         run: |
+#           echo "${{env.TF_PLAN}}"
+#           echo "${{env.TF_PLAN}}" > tfplan.json
       
       - name: Compliance IAM Check
         id: compliance_iam_check
