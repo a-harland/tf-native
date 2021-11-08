@@ -73,7 +73,6 @@ jobs:
         continue-on-error: true
         with:
           script: |
-            echo ${{ steps.compliance_metadata_check.outputs.exitcode }}
             if [[ 0 != steps.compliance_metadata_check.outputs.exitcode ]]; then
               core.setFailed("Your changes have failed our metadata compliance checks. Please check the logs and correct your changes.");
         
