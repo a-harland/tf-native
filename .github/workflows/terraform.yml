@@ -78,7 +78,7 @@ jobs:
             #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`\
             <details><summary>Show Plan</summary>
             \`\`\`\n
-            ${{echo steps.plan.ouputs.planOutput }}
+            ${{ steps.plan.ouputs.planOutput }}
             \`\`\`
             </details>
             *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
