@@ -60,8 +60,57 @@ jobs:
     
       - name: Terraform Plan
         id: checkfile
-        run: terraform show -json tfplan > tfplan.json
-          
+        run: terraform show -json tfplan > tfplan.json 
+
+      - uses: actions/github-script@v5
+        if: github.event_name == 'pull_request'
+        env:
+          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `### Terraform Checks\`
+            #### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`\
+            <details><summary>Show Plan</summary>
+            \`\`\`\n
+            ${process.env.PLAN}
+            \`\`\`
+            </details>
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: terraform apply -auto-approve
+
+  compliance_metadata_check:
+    name: "Compliance Metadata Checks"
+    needs: terraform
+    runs-on: ubuntu-18.04
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./envs/tst
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Setup Conftest
+        uses: artis3n/setup-conftest@v0
+        with:
+          conftest_version: 0.28.3
+          conftest_wrapper: true
+      
       - name: Compliance Metadata check
         id: compliance_metadata_check
         run: |
@@ -79,7 +128,25 @@ jobs:
             if (METADATA_CHECK_OUTPUT != 0) {
               core.setFailed("Your changes have failed our metadata compliance checks. Please check the logs and correct your changes.");
             }
-        
+
+  compliance_iam_check:
+    name: "Compliance IAM Checks"
+    needs: terraform
+    runs-on: ubuntu-18.04
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./envs/tst
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Setup Conftest
+        uses: artis3n/setup-conftest@v0
+        with:
+          conftest_version: 0.28.3
+          conftest_wrapper: true
+      
       - name: Compliance IAM Check
         id: compliance_iam_check
         run: conftest test --parser json --policy ../../policy/iam tfplan.json
@@ -126,39 +193,3 @@ jobs:
            } else {
              core.setFailed("IAM changes have not been approved by someone in the IAM team.");
            }
-
-      - uses: actions/github-script@v5
-        if: github.event_name == 'pull_request'
-        env:
-          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const output = `### Terraform Checks\`
-            #### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
-            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
-            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
-            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`\
-            ### ******************************************************\\
-            ### Compliance Checks\`
-            #### Compliance Metadata Check \`${{ steps.compliance_metadata_check.outcome }}\`
-            #### Compliance IAM Check \`${{ steps.compliance_iam_check.outcome }}\`
-            # Your changes must be approved by someone in the IAM team.
-            <details><summary>Show Plan</summary>
-            \`\`\`\n
-            ${process.env.PLAN}
-            \`\`\`
-            </details>
-            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: output
-            })
-      - name: Terraform Plan Status
-        if: steps.plan.outcome == 'failure'
-        run: exit 1
-      - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -auto-approve
