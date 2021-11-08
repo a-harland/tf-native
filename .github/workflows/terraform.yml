@@ -67,7 +67,7 @@ jobs:
         if: github.event_name == 'pull_request'
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
-          PLAN_TEXT: "echo ${{ steps.output_tfplan.ouputs.TF_PLAN_TEXT }}"
+          PLAN_TEXT: "${{ steps.output_tfplan.ouputs.TF_PLAN_TEXT }}"
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
