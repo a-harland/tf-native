@@ -7,7 +7,7 @@ on:
   pull_request:
 
 jobs:
-  terraform:
+  build:
     uses: a-harland/tf-native-workflow/.github/workflows/terraform.yml@v1.0.0
     secrets:
       GCP_SA_EMAIL: ${{ secrets.GCP_SA_EMAIL }}
