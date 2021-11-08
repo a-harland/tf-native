@@ -190,7 +190,7 @@ jobs:
               repo: context.repo.repo,
               pull_number: ${{ github.event.number }},
             })
-           console.log(review.data);
+           console.log(reviews.data);
            if (reviews.data) {
              reviews.data.forEach(review => {
                 if (review.user.login === "asaharland") {
