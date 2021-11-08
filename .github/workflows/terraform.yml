@@ -161,37 +161,39 @@ jobs:
         if: steps.compliance_iam_check.outputs.exitcode != 0
         with:
           script: |
+           const reviewer = "asaharland"
            const reviews = await github.rest.pulls.listReviews({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: ${{ github.event.number }},
            });
-           
            const currentReviewers = await github.rest.pulls.listRequestedReviewers({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: ${{ github.event.number }},
            });
+           
            const requestReviewer = () => {
-             if (currentReviewers.data.users.some(e => e.login !== 'asaharland')) {
+             console.log(currentReviewers.data.users);
+             if (currentReviewers.data.users.some(e => e.login !== reviewer)) {
                 github.rest.pulls.requestReviewers({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   pull_number: ${{ github.event.number }},
-                  reviewers: ["asaharland"]
+                  reviewers: [reviewer]
                 });
               }
            };
              
            if (reviews.data.length > 0) {
              reviews.data.forEach(review => {
-                if (review.user.login === "asaharland" && review.state.toUpperCase() === "APPROVED") {
-                  console.log(review);
-                  return;
+                if (review.user.login === reviewer) {
+                  if (review.state.toUpperCase() !== "APPROVED") {
+                    console.log("Adding reviewer.");
+                    requestReviewer();
+                  }
                 }
              });
-             console.log("Adding reviewer.");
-             requestReviewer();
            } else {
              requestReviewer();
            }
