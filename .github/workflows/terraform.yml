@@ -129,7 +129,7 @@ jobs:
         with:
           script: |
             const { METADATA_CHECK_EXITCODE, METADATA_CHECK_ERRORS } = process.env
-            if (METADATA_CHECK_OUTPUT != 0) {
+            if (METADATA_CHECK_EXITCODE != 0) {
               core.setFailed(METADATA_CHECK_ERRORS);
             }
 
