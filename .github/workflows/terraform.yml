@@ -57,7 +57,8 @@ jobs:
       - name: Terraform Plan
         id: output_tfplan
         run: |
-          JSON=$(terraform show -json tfplan)
+          terraform show -json tfplan > tfplan.json
+          JSON=$(cat ./tfplan.json)
           echo "::set-output name=TF_PLAN::${JSON//'%'/'%25'}"
 
       - uses: actions/github-script@v5
