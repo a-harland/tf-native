@@ -65,7 +65,16 @@ jobs:
         id: compliance_metadata_check
         run: conftest test --parser json --policy ../../policy/metadata tfplan.json
         
-      - name: Compliance IAM check
+      - name: Compliance Metadata Check Output
+        id: compliance_metadata_check_output
+        uses: actions/github-script@v5
+        if: steps.compliance_metadata_check.outcome != 'success'
+        continue-on-error: true
+        with:
+          script: |
+            core.setFailed("Your changes have failed our metadata compliance checks. Please check the logs and correct your changes.");
+        
+      - name: Compliance IAM Check
         id: compliance_iam_check
         run: conftest test --parser json --policy ../../policy/iam tfplan.json
         
