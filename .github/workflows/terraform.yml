@@ -22,6 +22,7 @@ jobs:
         uses: artis3n/setup-conftest@v0
         with:
           conftest_version: 0.28.3
+          conftest_wrapper: true
         
       - name: Configure gcloud
         id: config_gcloud
@@ -63,14 +64,30 @@ jobs:
           
       - name: Compliance Metadata check
         id: compliance_metadata_check
-        run: conftest test --parser json --policy ../../policy/metadata tfplan.json
+        run: |
+          conftest test --parser json --policy ../../policy/metadata tfplan.json
         
-      - name: Compliance IAM check
+      - name: Compliance Metadata Check Output
+        id: compliance_metadata_check_output
+        uses: actions/github-script@v5
+        env: 
+          METADATA_CHECK_OUTPUT: steps.compliance_metadata_check.outputs.exitcode 
+        with:
+          script: |
+            const { METADATA_CHECK_OUTPUT } = process.env
+            console.log(METADATA_CHECK_OUTPUT);
+            if (METADATA_CHECK_OUTPUT != 0) {
+              core.setFailed("Your changes have failed our metadata compliance checks. Please check the logs and correct your changes.");
+            }
+        
+      - name: Compliance IAM Check
         id: compliance_iam_check
         run: conftest test --parser json --policy ../../policy/iam tfplan.json
         
       - name: Request IAM Approval
+        id: compliance_iam_request
         uses: actions/github-script@v5
+        if: steps.compliance_iam_check.outcome != 'success'
         with:
           script: |
            const currentReviewers = await github.rest.pulls.listRequestedReviewers({
@@ -78,20 +95,20 @@ jobs:
               repo: context.repo.repo,
               pull_number: ${{ github.event.number }},
            });
-           if (currentReviewers.data.users.some(e => e.login === 'asaharland')) {
-             console.log("Review already requested.");
-           } else {
+           if (currentReviewers.data.users.some(e => e.login !== 'asaharland')) {
               github.rest.pulls.requestReviewers({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 pull_number: ${{ github.event.number }},
                 reviewers: ["asaharland"]
               });
-              console.log("Added IAM reviewer.");
            }
         
       - name: Check IAM Approval
+        id: compliance_iam_check_approval
         uses: actions/github-script@v5
+        if: steps.compliance_iam_check.outcome != 'success'
+        continue-on-error: true
         with:
           script: |
            const reviews = await github.rest.pulls.listReviews({
@@ -100,24 +117,15 @@ jobs:
               pull_number: ${{ github.event.number }},
             })
            
-           reviews.data.forEach(review => {
-             if (review.user.login === "asaharland" && review.state.toUpperCase() === "APPROVED") {
-                 console.log("IAM changes approved.");
-             } else {
-               // Fail checks.
-             }
-             console.log(review);
-           });
-      
-      - uses: actions/github-script@v5
-        with:
-          script: |
-            const reviewers = await github.rest.pulls.listRequestedReviewers({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: ${{ github.event.number }}
-            })
-            console.log(reviewers.data.users[0])
+           if (reviews) {
+             reviews.data.forEach(review => {
+                if (review.user.login === "asaharland" & review.state.toUpperCase() !== "APPROVED") {
+                  core.setFailed("IAM changes have not been approved by someone in the IAM team.");
+                }
+             });
+           } else {
+             core.setFailed("IAM changes have not been approved by someone in the IAM team.");
+           }
 
       - uses: actions/github-script@v5
         if: github.event_name == 'pull_request'
@@ -135,6 +143,7 @@ jobs:
             ### Compliance Checks\`
             #### Compliance Metadata Check \`${{ steps.compliance_metadata_check.outcome }}\`
             #### Compliance IAM Check \`${{ steps.compliance_iam_check.outcome }}\`
+            # Your changes must be approved by someone in the IAM team.
             <details><summary>Show Plan</summary>
             \`\`\`\n
             ${process.env.PLAN}
