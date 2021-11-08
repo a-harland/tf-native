@@ -161,6 +161,7 @@ jobs:
         if: steps.compliance_iam_check.outputs.exitcode != 0
         with:
           script: |
+           console.log(${{ steps.compliance_iam_check.outputs.exitcode }});
            const currentReviewers = await github.rest.pulls.listRequestedReviewers({
               owner: context.repo.owner,
               repo: context.repo.repo,
