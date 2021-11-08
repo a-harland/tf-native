@@ -8,7 +8,7 @@ resource "google_project_iam_policy" "project" {
   policy_data = data.google_iam_policy.admin.policy_data
 }
 
-data "google_iam_policy" "editor" {
+data "google_iam_policy" "admin" {
   binding {
     role = "roles/owner"
 
