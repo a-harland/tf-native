@@ -51,14 +51,13 @@ jobs:
       - name: Terraform Plan
         id: plan
         if: github.event_name == 'pull_request'
-        run: |
-          terraform plan -no-color > plan.txt
-          echo "::set-output name=planOutput::${cat plan.txt}"
+        run: terraform plan -no-color
         continue-on-error: true
     
       - name: Terraform Plan
         id: output_tfplan
         run: |
+          echo "::set-output name=TF_PLAN_TEXT::$(terraform plan -no-color)"
           terraform plan -no-color -out=tfplan
           terraform show -json tfplan > tfplan.json
           JSON=$(cat ./tfplan.json)
@@ -68,6 +67,7 @@ jobs:
         if: github.event_name == 'pull_request'
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+          PLAN_TEXT: "echo ${{ steps.output_tfplan.ouputs.TF_PLAN_TEXT }}"
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -78,7 +78,7 @@ jobs:
             #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`\
             <details><summary>Show Plan</summary>
             \`\`\`\n
-            ${{ steps.plan.ouputs.planOutput }}
+            ${{ process.env.PLAN_TEXT }}
             \`\`\`
             </details>
             *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
