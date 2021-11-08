@@ -102,20 +102,19 @@ jobs:
               pull_number: ${{ github.event.number }},
             })
            
-           reviews.data.forEach(review => {
-              console.log(review);
-              console.log(review.state);
-              console.log(review.user.login);
-              console.log(review.user.login === "asaharland");
-              if (review.user.login == "asaharland" && review.state.toUpperCase() == "APPROVED") {
-                console.log("IAM changes approved.");
-                return;
-              } else if (review.user.login == "asaharland" & review.state.toUpperCase() != "APPROVED") {
-                core.setFailed("IAM changes have not been approved by someone in the IAM team.");
-                return;
-              }
-           });
-           core.setFailed("IAM changes have not been approved by someone in the IAM team.");
+           if (reviews) {
+             reviews.data.forEach(review => {
+                if (review.user.login == "asaharland" && review.state.toUpperCase() == "APPROVED") {
+                  console.log("IAM changes approved.");
+                  return 0;
+                } else if (review.user.login == "asaharland" & review.state.toUpperCase() != "APPROVED") {
+                  core.setFailed("IAM changes have not been approved by someone in the IAM team.");
+                }
+             });
+           } else {
+             core.setFailed("IAM changes have not been approved by someone in the IAM team.");
+           }
+           console.log("End of IAM check.");
       
       - uses: actions/github-script@v5
         with:
