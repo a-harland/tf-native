@@ -113,8 +113,8 @@ jobs:
       - name: Save TF Plan
         id: save_tf_plan
         run: |
-          echo "${{fromJson(needs.terraform.outputs.tf_plan)}}"
-          echo ${{fromJson(needs.terraform.outputs.tf_plan)}} > tfplan.json
+          ${{fromJson(needs.terraform.outputs.tf_plan)}}
+          ${{fromJson(needs.terraform.outputs.tf_plan)}} > tfplan.json
           ${{fromJson(needs.terraform.outputs.tf_plan)}} > non_tfplan.json
           cat tfplan.json
           cat non_tfplan.json
