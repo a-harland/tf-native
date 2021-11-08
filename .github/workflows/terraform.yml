@@ -75,7 +75,7 @@ jobs:
           script: |
             console.log(${process.env.PLAN_TEXT});
             console.log(${{steps.plan.outputs.stdout}});
-            const output = `### Terraform Checks\
+            const output = `### Terraform Checks\`
             #### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
             #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
