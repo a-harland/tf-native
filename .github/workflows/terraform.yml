@@ -176,6 +176,7 @@ jobs:
            const requestReviewer = () => {
              console.log(currentReviewers.data.users);
              if (currentReviewers.data.users.some(e => e.login !== reviewer)) {
+                console.log("Adding reviewer.");
                 github.rest.pulls.requestReviewers({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
@@ -187,11 +188,8 @@ jobs:
              
            if (reviews.data.length > 0) {
              reviews.data.forEach(review => {
-                if (review.user.login === reviewer) {
-                  if (review.state.toUpperCase() !== "APPROVED") {
-                    console.log("Adding reviewer.");
-                    requestReviewer();
-                  }
+                if (review.user.login === reviewer && review.state.toUpperCase() !== "APPROVED") {
+                  requestReviewer();
                 }
              });
            } else {
