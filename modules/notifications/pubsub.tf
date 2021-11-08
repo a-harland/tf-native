@@ -12,8 +12,3 @@ resource "google_pubsub_topic_iam_member" "member" {
   role    = "roles/pubsub.publisher"
   member  = "serviceAccount:${var.publisher_sa}"
 }
-
-resource "google_pubsub_topic" "notifications_no_label" {
-  project = var.project_id
-  name    = "spi-notification-no-label-${var.name}"
-}
