@@ -191,14 +191,15 @@ jobs:
               pull_number: ${{ github.event.number }},
             })
            console.log(reviews);
-           console.log(reviews.length);
            if (reviews) {
+             console.log("Iterating reviews.");
              reviews.data.forEach(review => {
                 if (review.user.login === "asaharland" & review.state.toUpperCase() !== "APPROVED") {
                   core.setFailed("IAM changes have not been approved by someone in the IAM team.");
                 }
              });
            } else {
+             console.log("Failed.");
              core.setFailed("IAM changes have not been approved by someone in the IAM team.");
            }
 
