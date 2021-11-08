@@ -58,7 +58,7 @@ jobs:
         id: output_tfplan
         run: |
           terraform show -json tfplan > tfplan.json
-          echo ::set-output name=TF_PLAN::$(cat tfplan.json)
+          echo '::set-output name=TF_PLAN::$(cat tfplan.json)'
 
       - uses: actions/github-script@v5
         if: github.event_name == 'pull_request'
