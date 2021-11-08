@@ -166,6 +166,7 @@ jobs:
               repo: context.repo.repo,
               pull_number: ${{ github.event.number }},
            });
+           
            if (currentReviewers.data.users.some(e => e.login !== 'asaharland')) {
               github.rest.pulls.requestReviewers({
                 owner: context.repo.owner,
