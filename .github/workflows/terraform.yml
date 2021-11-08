@@ -167,10 +167,6 @@ jobs:
               pull_number: ${{ github.event.number }},
            });
            if (reviews.data.users.some(e => e.login !== 'asaharland')) {
-             addReviewer();
-           }
-       
-           addReviewer = () => {
              const currentReviewers = await github.rest.pulls.listRequestedReviewers({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -187,7 +183,7 @@ jobs:
                   reviewers: ["asaharland"]
                 });
              }
-           };
+           }
            
       - name: Check IAM Approval
         id: compliance_iam_check_approval
