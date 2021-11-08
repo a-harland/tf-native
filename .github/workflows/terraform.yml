@@ -54,14 +54,16 @@ jobs:
         run: terraform plan -no-color
         continue-on-error: true
     
-      - name: Terraform Plan
+      - name: Save Terraform Plan
         id: output_tfplan
+        if: github.event_name == 'pull_request'
         run: |
           echo "::set-output name=TF_PLAN_TEXT::$(terraform plan -no-color)"
           terraform plan -no-color -out=tfplan
           terraform show -json tfplan > tfplan.json
           JSON=$(cat ./tfplan.json)
           echo "::set-output name=TF_PLAN::${JSON//'%'/'%25'}"
+        continue-on-error: true
 
       - uses: actions/github-script@v5
         if: github.event_name == 'pull_request'
@@ -71,16 +73,12 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const output = `### Terraform Checks\`
+            const output = `### Terraform Checks\
             #### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
             #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
             #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`\
-            <details><summary>Show Plan</summary>
-            \`\`\`\n
-            ${ process.env.PLAN_TEXT }
-            \`\`\`
-            </details>
+            
             *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
             github.rest.issues.createComment({
               issue_number: context.issue.number,
