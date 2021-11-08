@@ -155,6 +155,40 @@ jobs:
         id: compliance_iam_check
         run: conftest test --parser json --policy ../../policy/iam tfplan.json
         
+      - name: Request IAM Approval
+        id: compliance_iam_request
+        uses: actions/github-script@v5
+        if: steps.compliance_iam_check_approval.outputs.exitcode != 0
+        with:
+          script: |
+           const reviews = await github.rest.pulls.listReviews({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: ${{ github.event.number }},
+           });
+           if (reviews.data.users.some(e => e.login !== 'asaharland')) {
+             addReviewer();
+           }
+       
+           addReviewer = () => {
+             const currentReviewers = await github.rest.pulls.listRequestedReviewers({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: ${{ github.event.number }},
+             });
+
+             if (currentReviewers.data.users.some(e => e.login === 'asaharland')) {
+               console.log("Review already requested from IAM team.");
+             } else {
+                 github.rest.pulls.requestReviewers({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: ${{ github.event.number }},
+                  reviewers: ["asaharland"]
+                });
+             }
+           };
+           
       - name: Check IAM Approval
         id: compliance_iam_check_approval
         uses: actions/github-script@v5
@@ -174,29 +208,6 @@ jobs:
              });
            } else {
              core.setFailed("IAM changes need to be approved by the IAM team.");
-           }
-        
-      - name: Request IAM Approval
-        id: compliance_iam_request
-        uses: actions/github-script@v5
-        if: steps.compliance_iam_check_approval.outputs.exitcode != 0
-        with:
-          script: |         
-           const currentReviewers = await github.rest.pulls.listRequestedReviewers({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: ${{ github.event.number }},
-           });
-
-           if (currentReviewers.data.users.some(e => e.login === 'asaharland')) {
-             console.log("Review already requested from IAM team.");
-           } else {
-               github.rest.pulls.requestReviewers({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: ${{ github.event.number }},
-                reviewers: ["asaharland"]
-              });
            }
 
   terraform_apply:
