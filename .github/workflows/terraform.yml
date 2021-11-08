@@ -89,7 +89,7 @@ jobs:
         if: steps.plan.outcome == 'failure'
         run: exit 1
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
         run: terraform apply -auto-approve
 
   compliance_metadata_check:
@@ -124,13 +124,13 @@ jobs:
         id: compliance_metadata_check_output
         uses: actions/github-script@v5
         env: 
-          METADATA_CHECK_OUTPUT: steps.compliance_metadata_check.outputs.exitcode 
+          METADATA_CHECK_EXITCODE: "${{ steps.compliance_metadata_check.outputs.exitcode }}"
+          METADATA_CHECK_ERRORS: "${{ steps.compliance_metadata_check.outputs.stdout }}"
         with:
           script: |
-            const { METADATA_CHECK_OUTPUT } = process.env
-            console.log(METADATA_CHECK_OUTPUT);
-            if (METADATA_CHECK_OUTPUT != 0) {
-              core.setFailed("Your changes have failed our metadata compliance checks. Please check the logs and correct your changes.");
+            const { METADATA_CHECK_EXITCODE, METADATA_CHECK_ERRORS } = process.env;
+            if (METADATA_CHECK_EXITCODE != 0) {
+              core.setFailed(METADATA_CHECK_ERRORS);
             }
 
   compliance_iam_check:
