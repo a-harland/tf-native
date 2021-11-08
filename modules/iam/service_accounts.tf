@@ -8,9 +8,9 @@ resource "google_project_iam_policy" "project" {
   policy_data = data.google_iam_policy.admin.policy_data
 }
 
-data "google_iam_policy" "admin" {
+data "google_iam_policy" "editor" {
   binding {
-    role = "roles/editor"
+    role = "roles/owner"
 
     members = [
       "user:asa.harland@e.lloydsbanking.com",
