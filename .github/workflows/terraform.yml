@@ -158,7 +158,7 @@ jobs:
       - name: Request IAM Approval
         id: compliance_iam_request
         uses: actions/github-script@v5
-        if: steps.compliance_metadata_check.outputs.exitcode != 0
+        if: steps.compliance_iam_check.outputs.exitcode != 0
         with:
           script: |
            const currentReviewers = await github.rest.pulls.listRequestedReviewers({
@@ -178,7 +178,7 @@ jobs:
       - name: Check IAM Approval
         id: compliance_iam_check_approval
         uses: actions/github-script@v5
-        if: steps.compliance_metadata_check.outputs.exitcode != 0
+        if: steps.compliance_iam_check.outputs.exitcode != 0
         continue-on-error: true
         with:
           script: |
