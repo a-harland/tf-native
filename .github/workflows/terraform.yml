@@ -172,31 +172,28 @@ jobs:
               repo: context.repo.repo,
               pull_number: ${{ github.event.number }},
            });
+           const requestReviewer = () => {
+             if (currentReviewers.data.users.some(e => e.login !== 'asaharland')) {
+                github.rest.pulls.requestReviewers({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: ${{ github.event.number }},
+                  reviewers: ["asaharland"]
+                });
+              }
+           };
              
            if (reviews.data.length > 0) {
              reviews.data.forEach(review => {
                 if (review.user.login === "asaharland" && review.state.toUpperCase() === "APPROVED") {
+                  console.log(review);
                   return;
                 }
              });
              console.log("Adding reviewer.");
-             if (currentReviewers.data.users.some(e => e.login !== 'asaharland')) {
-                github.rest.pulls.requestReviewers({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  pull_number: ${{ github.event.number }},
-                  reviewers: ["asaharland"]
-                });
-             }
+             requestReviewer();
            } else {
-             if (currentReviewers.data.users.some(e => e.login !== 'asaharland')) {
-                github.rest.pulls.requestReviewers({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  pull_number: ${{ github.event.number }},
-                  reviewers: ["asaharland"]
-                });
-             }
+             requestReviewer();
            }
            
       - name: Check IAM Approval
