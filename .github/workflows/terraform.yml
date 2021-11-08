@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    uses: a-harland/tf-native-workflow/.github/workflows/terraform.yml
+    uses: a-harland/tf-native-workflow/.github/workflows/terraform.yml@v1.1.0
     secrets:
       GCP_SA_EMAIL: ${{ secrets.GCP_SA_EMAIL }}
       GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
