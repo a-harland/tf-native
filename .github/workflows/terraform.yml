@@ -128,8 +128,8 @@ jobs:
           METADATA_CHECK_ERRORS: steps.compliance_metadata_check.outputs.stdout 
         with:
           script: |
+            const { METADATA_CHECK_EXITCODE, METADATA_CHECK_ERRORS } = process.env;
             console.log(METADATA_CHECK_ERRORS);
-            const { METADATA_CHECK_EXITCODE, METADATA_CHECK_ERRORS } = process.env
             if (METADATA_CHECK_EXITCODE != 0) {
               core.setFailed(METADATA_CHECK_ERRORS);
             }
