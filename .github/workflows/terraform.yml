@@ -104,10 +104,13 @@ jobs:
            
            reviews.data.forEach(review => {
               console.log(review);
-              if (review.user.login === "asaharland" && review.state.toUpperCase() === "APPROVED") {
+              console.log(review.state);
+              console.log(review.user.login);
+              console.log(review.user.login === "asaharland");
+              if (review.user.login == "asaharland" && review.state.toUpperCase() == "APPROVED") {
                 console.log("IAM changes approved.");
                 return;
-              } else if (review.user.login === "asaharland" & review.state.toUpperCase() !== "APPROVED") {
+              } else if (review.user.login == "asaharland" & review.state.toUpperCase() != "APPROVED") {
                 core.setFailed("IAM changes have not been approved by someone in the IAM team.");
                 return;
               }
