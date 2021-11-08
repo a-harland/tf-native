@@ -167,7 +167,7 @@ jobs:
               pull_number: ${{ github.event.number }},
            });
            if (reviews.data.length > 0) {
-             if (reviews.data.users.some(e => e.login !== 'asaharland')) {
+             if (reviews.data.users.length > 0 && reviews.data.users.some(e => e.login !== 'asaharland')) {
                const currentReviewers = await github.rest.pulls.listRequestedReviewers({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
@@ -191,8 +191,8 @@ jobs:
                 repo: context.repo.repo,
                 pull_number: ${{ github.event.number }},
              });
-             
-             if (currentReviewers.data.length > 0 && currentReviewers.data.users.some(e => e.login === 'asaharland')) {
+             console.log("here");
+             if (currentReviewers.data.length > 0 && currentReviewers.data.users.length > 0 && currentReviewers.data.users.some(e => e.login === 'asaharland')) {
                console.log("Review already requested from IAM team.");
              } else {
                  github.rest.pulls.requestReviewers({
