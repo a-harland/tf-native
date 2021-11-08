@@ -75,9 +75,9 @@ jobs:
         continue-on-error: true
         with:
           script: |
-            const metadataCheckOutput = parseEnv('METADATA_CHECK_OUTPUT');
-            console.log(metadataCheckOutput);
-            if (metadataCheckOutput) {
+            const { METADATA_CHECK_OUTPUT } = process.env
+            console.log(METADATA_CHECK_OUTPUT);
+            if (METADATA_CHECK_OUTPUT != 0) {
               core.setFailed("Your changes have failed our metadata compliance checks. Please check the logs and correct your changes.");
             }
         
