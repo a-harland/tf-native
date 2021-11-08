@@ -75,7 +75,7 @@ jobs:
             #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`\
             <details><summary>Show Plan</summary>
             \`\`\`\n
-            ${process.env.PLAN}
+            ${steps.plan.stdout}
             \`\`\`
             </details>
             *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`*`;
@@ -113,9 +113,7 @@ jobs:
       - name: Save TF Plan
         id: save_tf_plan
         run: |
-          echo '${{needs.terraform.outputs.tf_plan}}'
           echo '${{needs.terraform.outputs.tf_plan}}' > tfplan.json
-          cat tfplan.json
       
       - name: Compliance Metadata check
         id: compliance_metadata_check
@@ -153,11 +151,10 @@ jobs:
           conftest_version: 0.28.3
           conftest_wrapper: true
 
-#       - name: Save TF Plan
-#         id: save_tf_plan
-#         run: |
-#           echo "${{env.TF_PLAN}}"
-#           echo "${{env.TF_PLAN}}" > tfplan.json
+      - name: Save TF Plan
+        id: save_tf_plan
+        run: |
+          echo '${{needs.terraform.outputs.tf_plan}}' > tfplan.json
       
       - name: Compliance IAM Check
         id: compliance_iam_check
