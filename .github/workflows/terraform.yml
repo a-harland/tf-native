@@ -112,8 +112,8 @@ jobs:
       - name: Save TF Plan
         id: save_tf_plan
         run: |
-          echo ${{needs.terraform.outputs.tf_plan}}
-          echo ${{needs.terraform.outputs.tf_plan}} > tfplan.json
+          echo "${{needs.terraform.outputs.tf_plan}}"
+          echo "${{needs.terraform.outputs.tf_plan}}" > tfplan.json
       
       - name: Compliance Metadata check
         id: compliance_metadata_check
