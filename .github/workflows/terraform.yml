@@ -161,13 +161,13 @@ jobs:
         if: steps.compliance_iam_check.outputs.exitcode != 0
         with:
           script: |
-           console.log(${{ steps.compliance_iam_check.outputs.exitcode }});
            const currentReviewers = await github.rest.pulls.listRequestedReviewers({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: ${{ github.event.number }},
            });
-           if (currentReviewers.data.users.some(e => e.login !== 'asaharland')) {
+           console.log(currentReviewers.data.users.some(e => e.login !== 'asaharland'));
+           if (currentReviewers.data.users.some(e => e.login !== 'asaharland') || currentReviewers.length == 0) {
               github.rest.pulls.requestReviewers({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
