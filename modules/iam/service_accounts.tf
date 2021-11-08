@@ -10,7 +10,7 @@ resource "google_project_iam_policy" "project" {
 
 data "google_iam_policy" "admin" {
   binding {
-    role = "roles/editor"
+    role = "roles/owner"
 
     members = [
       "user:asa.harland@e.lloydsbanking.com",
