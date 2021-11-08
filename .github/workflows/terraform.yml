@@ -72,7 +72,6 @@ jobs:
         uses: actions/github-script@v5
         env: 
           METADATA_CHECK_OUTPUT: steps.compliance_metadata_check.outputs.exitcode 
-        continue-on-error: true
         with:
           script: |
             const { METADATA_CHECK_OUTPUT } = process.env
