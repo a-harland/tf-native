@@ -70,11 +70,16 @@ jobs:
       - name: Compliance Metadata Check Output
         id: compliance_metadata_check_output
         uses: actions/github-script@v5
+        env: 
+          METADATA_CHECK_OUTPUT: steps.compliance_metadata_check.outputs.exitcode 
         continue-on-error: true
         with:
           script: |
-            if [[ 0 != steps.compliance_metadata_check.outputs.exitcode ]]; then
+            const metadataCheckOutput = parseEnv('METADATA_CHECK_OUTPUT');
+            console.log(metadataCheckOutput);
+            if (metadataCheckOutput) {
               core.setFailed("Your changes have failed our metadata compliance checks. Please check the logs and correct your changes.");
+            }
         
       - name: Compliance IAM Check
         id: compliance_iam_check
