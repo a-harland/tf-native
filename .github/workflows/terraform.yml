@@ -166,6 +166,7 @@ jobs:
               repo: context.repo.repo,
               pull_number: ${{ github.event.number }},
            });
+           console.log(reviews)
            if (reviews.data) {
              if (reviews.data.users.length > 0 && reviews.data.users.some(e => e.login !== 'asaharland')) {
                const currentReviewers = await github.rest.pulls.listRequestedReviewers({
