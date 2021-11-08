@@ -192,11 +192,11 @@ jobs:
            if (reviews.data.length > 0) {
              reviews.data.forEach(review => {
                 if (review.user.login === "asaharland" && review.state.toUpperCase() !== "APPROVED") {
-                  core.setFailed("IAM changes have not been approved by someone in the IAM team.");
+                  core.setFailed("IAM changes need to be approved by the IAM team.");
                 }
              });
            } else {
-             core.setFailed("IAM changes have not been approved by someone in the IAM team.");
+             core.setFailed("IAM changes need to be approved by the IAM team.");
            }
 
   terraform_apply:
