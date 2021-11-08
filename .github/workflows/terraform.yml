@@ -99,10 +99,7 @@ jobs:
       run:
         shell: bash
         working-directory: ./envs/tst
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      
+    steps:      
       - name: Setup Conftest
         uses: artis3n/setup-conftest@v0
         with:
@@ -142,9 +139,6 @@ jobs:
         shell: bash
         working-directory: ./envs/tst
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      
       - name: Setup Conftest
         uses: artis3n/setup-conftest@v0
         with:
