@@ -22,6 +22,7 @@ jobs:
         uses: artis3n/setup-conftest@v0
         with:
           conftest_version: 0.28.3
+          conftest_wrapper: true
         
       - name: Configure gcloud
         id: config_gcloud
@@ -63,16 +64,18 @@ jobs:
           
       - name: Compliance Metadata check
         id: compliance_metadata_check
-        run: conftest test --parser json --policy ../../policy/metadata tfplan.json
+        run: |
+          conftest test --parser json --policy ../../policy/metadata tfplan.json
         
       - name: Compliance Metadata Check Output
         id: compliance_metadata_check_output
         uses: actions/github-script@v5
-        if: steps.compliance_metadata_check.outcome != 'success'
         continue-on-error: true
         with:
           script: |
-            core.setFailed("Your changes have failed our metadata compliance checks. Please check the logs and correct your changes.");
+            echo ${{ steps.compliance_metadata_check.outputs.exitcode }}
+            if [[ 0 != steps.compliance_metadata_check.outputs.exitcode ]]; then
+              core.setFailed("Your changes have failed our metadata compliance checks. Please check the logs and correct your changes.");
         
       - name: Compliance IAM Check
         id: compliance_iam_check
