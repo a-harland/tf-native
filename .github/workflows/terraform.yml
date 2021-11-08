@@ -50,13 +50,11 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        if: github.event_name == 'pull_request'
         run: terraform plan -no-color
         continue-on-error: true
     
       - name: Save Terraform Plan
         id: output_tfplan
-        if: github.event_name == 'pull_request'
         run: |
           terraform plan -no-color -out=tfplan
           terraform show -json tfplan > tfplan.json
