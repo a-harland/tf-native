@@ -116,9 +116,6 @@ jobs:
           echo '${{needs.terraform.outputs.tf_plan}}'
           echo '${{needs.terraform.outputs.tf_plan}}' > tfplan.json
           cat tfplan.json
-          ${{fromJson(needs.terraform.outputs.tf_plan)}} > non_tfplan.json
-          cat tfplan.json
-          cat non_tfplan.json
       
       - name: Compliance Metadata check
         id: compliance_metadata_check
