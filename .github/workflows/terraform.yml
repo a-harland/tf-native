@@ -14,15 +14,11 @@ jobs:
       run:
         shell: bash
         working-directory: ./envs/tst
+    outputs:
+      tf_plan: ${{ steps.output_tfplan.outputs.TF_PLAN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      
-      - name: Setup Conftest
-        uses: artis3n/setup-conftest@v0
-        with:
-          conftest_version: 0.28.3
-          conftest_wrapper: true
         
       - name: Configure gcloud
         id: config_gcloud
@@ -59,8 +55,10 @@ jobs:
         continue-on-error: true
     
       - name: Terraform Plan
-        id: checkfile
-        run: terraform show -json tfplan > tfplan.json 
+        id: output_tfplan
+        run: |
+          terraform show -json tfplan > tfplan.json
+          echo ::set-output name=TF_PLAN::$(cat tfplan.json)
 
       - uses: actions/github-script@v5
         if: github.event_name == 'pull_request'
@@ -110,6 +108,12 @@ jobs:
         with:
           conftest_version: 0.28.3
           conftest_wrapper: true
+
+      - name: Save TF Plan
+        id: save_tf_plan
+        run: |
+          echo ${{needs.terraform.outputs.tf_plan}}
+          echo ${{needs.terraform.outputs.tf_plan}} > tfplan.json
       
       - name: Compliance Metadata check
         id: compliance_metadata_check
@@ -146,6 +150,12 @@ jobs:
         with:
           conftest_version: 0.28.3
           conftest_wrapper: true
+
+      - name: Save TF Plan
+        id: save_tf_plan
+        run: |
+          echo ${{needs.terraform.outputs.tf_plan}}
+          echo ${{needs.terraform.outputs.tf_plan}} > tfplan.json
       
       - name: Compliance IAM Check
         id: compliance_iam_check
