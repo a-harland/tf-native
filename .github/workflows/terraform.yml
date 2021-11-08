@@ -70,32 +70,32 @@ jobs:
         run: conftest test --parser json --policy ../../policy/iam tfplan.json
         
       - name: Request IAM Approval
+        id: compliance_iam_request
         uses: actions/github-script@v5
+        if: steps.compliance_iam_check.outcome != 'success'
         with:
           script: |
-           // Only do this if the previous step fails
            const currentReviewers = await github.rest.pulls.listRequestedReviewers({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: ${{ github.event.number }},
            });
-           if (currentReviewers.data.users.some(e => e.login === 'asaharland')) {
-             console.log("Review already requested.");
-           } else {
+           if (currentReviewers.data.users.some(e => e.login !== 'asaharland')) {
               github.rest.pulls.requestReviewers({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 pull_number: ${{ github.event.number }},
                 reviewers: ["asaharland"]
               });
-              console.log("Added IAM reviewer.");
            }
         
       - name: Check IAM Approval
+        id: compliance_iam_check_approval
         uses: actions/github-script@v5
+        if: steps.compliance_iam_check.outcome != 'success'
+        continue-on-error: true
         with:
           script: |
-           // Only do this if the IAM check fails
            const reviews = await github.rest.pulls.listReviews({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -104,27 +104,13 @@ jobs:
            
            if (reviews) {
              reviews.data.forEach(review => {
-                if (review.user.login == "asaharland" && review.state.toUpperCase() == "APPROVED") {
-                  console.log("IAM changes approved.");
-                  return 0;
-                } else if (review.user.login == "asaharland" & review.state.toUpperCase() != "APPROVED") {
+                if (review.user.login === "asaharland" & review.state.toUpperCase() !== "APPROVED") {
                   core.setFailed("IAM changes have not been approved by someone in the IAM team.");
                 }
              });
            } else {
              core.setFailed("IAM changes have not been approved by someone in the IAM team.");
            }
-           console.log("End of IAM check.");
-      
-      - uses: actions/github-script@v5
-        with:
-          script: |
-            const reviewers = await github.rest.pulls.listRequestedReviewers({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: ${{ github.event.number }}
-            })
-            console.log(reviewers.data.users[0])
 
       - uses: actions/github-script@v5
         if: github.event_name == 'pull_request'
@@ -142,6 +128,7 @@ jobs:
             ### Compliance Checks\`
             #### Compliance Metadata Check \`${{ steps.compliance_metadata_check.outcome }}\`
             #### Compliance IAM Check \`${{ steps.compliance_iam_check.outcome }}\`
+            # Your changes must be approved by someone in the IAM team.
             <details><summary>Show Plan</summary>
             \`\`\`\n
             ${process.env.PLAN}
