@@ -190,9 +190,9 @@ jobs:
               repo: context.repo.repo,
               pull_number: ${{ github.event.number }},
             })
+           console.log(review.data);
            if (reviews.data) {
              reviews.data.forEach(review => {
-                console.log(review);
                 if (review.user.login === "asaharland") {
                   if (review.state.toUpperCase() !== "APPROVED") {
                     core.setFailed("IAM changes have not been approved by someone in the IAM team.");
