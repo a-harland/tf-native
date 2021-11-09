@@ -23,7 +23,3 @@ provider "google" {
 provider "google-beta" {
   project = "blue-dog-piano"
 }
-
-locals {
-  project_id = "blue-dog-piano"
-}
