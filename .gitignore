@@ -5,6 +5,8 @@
 *.tfstate
 *.tfstate.*
 
+modules/_pe_modules
+
 # Crash log files
 crash.log
 
