@@ -13,7 +13,7 @@ data "google_iam_policy" "admin" {
     role = "roles/editor"
 
     members = [
-      "user:asa.harland@lloydsbanking.com",
+      "user:asa.harland@e.lloydsbanking.com",
     ]
   }
 }
