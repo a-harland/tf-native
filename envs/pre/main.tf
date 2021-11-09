@@ -54,7 +54,7 @@ module "spinnaker_euw1" {
 
 module "spinnaker_euw2" {
   source             = "../../modules/spinnaker"
-  name               = "spi-euw1"
+  name               = "spi-euw2"
   project_id         = local.project_id
   env                = local.env
   region             = "europe-west2"
