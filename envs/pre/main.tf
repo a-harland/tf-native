@@ -52,7 +52,7 @@ module "spinnaker_euw1" {
   labels = local.labels
 }
 
-module "spinnaker_euw1" {
+module "spinnaker_euw2" {
   source             = "../../modules/spinnaker"
   name               = "spi-euw1"
   project_id         = local.project_id
