@@ -12,7 +12,7 @@ locals {
     troux_id           = "troux"
     cost_centre        = "cc"
     dataclassification = "limited"
-    cmdb_id.           = "234089"
+    cmdb_id            = "234089"
   }
 
   min_node_count    = 1
