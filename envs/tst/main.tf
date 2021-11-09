@@ -21,33 +21,33 @@ locals {
   cluster_disk_size = 200
 }
 
-module "iam" {
-  source               = "../../modules/iam"
-  service_account_name = "spi-service-account"
-}
+# module "iam" {
+#   source               = "../../modules/iam"
+#   service_account_name = "spi-service-account"
+# }
 
-module "notification" {
-  source       = "../../modules/notifications"
-  project_id   = local.project_id
-  name         = "ccf"
-  publisher_sa = module.iam.service_account_email
-}
+# module "notification" {
+#   source       = "../../modules/notifications"
+#   project_id   = local.project_id
+#   name         = "ccf"
+#   publisher_sa = module.iam.service_account_email
+# }
 
-module "spinnaker_euw1" {
-  source             = "../../modules/spinnaker"
-  name               = "spi-euw1"
-  project_id         = local.project_id
-  env                = local.env
-  region             = "europe-west1"
-  kms_project_id     = local.project_id
-  kms_key_ring       = "kms-eu-mgmt"
-  kms_crypto_key     = "tfci-cid-tst-d6b7-key"
-  service_project_id = "service-project"
+# module "spinnaker_euw1" {
+#   source             = "../../modules/spinnaker"
+#   name               = "spi-euw1"
+#   project_id         = local.project_id
+#   env                = local.env
+#   region             = "europe-west1"
+#   kms_project_id     = local.project_id
+#   kms_key_ring       = "kms-eu-mgmt"
+#   kms_crypto_key     = "tfci-cid-tst-d6b7-key"
+#   service_project_id = "service-project"
 
-  min_node_count    = local.min_node_count
-  max_node_count    = local.max_node_count
-  machine_type      = local.machine_type
-  cluster_disk_size = local.cluster_disk_size
+#   min_node_count    = local.min_node_count
+#   max_node_count    = local.max_node_count
+#   machine_type      = local.machine_type
+#   cluster_disk_size = local.cluster_disk_size
 
-  labels = local.labels
-}
+#   labels = local.labels
+# }
