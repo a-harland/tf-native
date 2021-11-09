@@ -5,7 +5,7 @@ locals {
   region         = "europe-west2"
   kms_project_id = "kms-project-id"
   kms_key_ring   = "kms-eu-mgmt"
-  kms_crypto_key = "kms_key"
+  kms_crypto_key = "kms-key"
 
   labels = {
     owner              = "a-harland"
