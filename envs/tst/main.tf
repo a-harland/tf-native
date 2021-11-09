@@ -23,6 +23,7 @@ locals {
 
 module "iam" {
   source               = "../../modules/iam"
+  project_id           = local.project_id
   service_account_name = "spi-service-account"
 }
 
