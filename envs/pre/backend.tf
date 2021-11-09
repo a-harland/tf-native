@@ -16,6 +16,16 @@ terraform {
   }
 }
 
+data "terraform_remote_state" "project" {
+  backend = "remote"
+  config = {
+    organization = "harland"
+    workspaces = {
+      name = "tf-native-project-tst"
+    }
+  }
+}
+
 provider "google" {
   project = "blue-dog-piano"
 }
