@@ -13,7 +13,7 @@ resource "google_service_account" "service_account" {
 #     role = "roles/editor"
 
 #     members = [
-#       "user:asa.harland@e.lloydsbanking.com",
+#       "user:asajharland@gmail.com",
 #     ]
 #   }
 # }
