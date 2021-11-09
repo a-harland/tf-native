@@ -1,12 +1,4 @@
 locals {
-  project_id     = "blue-dog-piano"
-  project_number = "8998239489"
-  env            = "pre"
-  region         = "europe-west2"
-  kms_project_id = "kms-project-id"
-  kms_key_ring   = "kms-eu-mgmt"
-  kms_crypto_key = "kms-key"
-
   labels = {
     owner              = "a-harland"
     troux_id           = "troux"
@@ -17,19 +9,19 @@ locals {
 
   min_node_count    = 3
   max_node_count    = 20
-  machine_type      = "n1-standard-2"
+  machine_type      = "n2-standard-16"
   cluster_disk_size = 200
 }
 
 module "iam" {
   source               = "../../modules/iam"
-  project_id           = local.project_id
+  project_id           = data.terraform_remote_state.project.outputs.project_id
   service_account_name = "spi-service-account"
 }
 
 module "notification" {
   source       = "../../modules/notifications"
-  project_id   = local.project_id
+  project_id   = data.terraform_remote_state.project.outputs.project_id
   name         = "ccf"
   publisher_sa = module.iam.service_account_email
 }
@@ -37,12 +29,12 @@ module "notification" {
 module "spinnaker_euw1" {
   source             = "../../modules/spinnaker"
   name               = "spi-euw1"
-  project_id         = local.project_id
-  env                = local.env
+  project_id         = data.terraform_remote_state.project.outputs.project_id
+  env                = data.terraform_remote_state.project.outputs.env
   region             = "europe-west1"
-  kms_project_id     = local.project_id
-  kms_key_ring       = "kms-eu-mgmt"
-  kms_crypto_key     = "kms-key"
+  kms_project_id     = data.terraform_remote_state.project.outputs.kms_project_id
+  kms_key_ring       = data.terraform_remote_state.project.outputs.kms_key_ring
+  kms_crypto_key     = data.terraform_remote_state.project.outputs.kms_crypto_key
   service_project_id = "service-project"
 
   min_node_count    = local.min_node_count
@@ -53,15 +45,15 @@ module "spinnaker_euw1" {
   labels = local.labels
 }
 
-module "spinnaker_euw2" {
+module "spinnaker_euw1" {
   source             = "../../modules/spinnaker"
   name               = "spi-euw2"
-  project_id         = local.project_id
-  env                = local.env
+  project_id         = data.terraform_remote_state.project.outputs.project_id
+  env                = data.terraform_remote_state.project.outputs.env
   region             = "europe-west2"
-  kms_project_id     = local.project_id
-  kms_key_ring       = "kms-eu-mgmt"
-  kms_crypto_key     = "kms-key"
+  kms_project_id     = data.terraform_remote_state.project.outputs.kms_project_id
+  kms_key_ring       = data.terraform_remote_state.project.outputs.kms_key_ring
+  kms_crypto_key     = data.terraform_remote_state.project.outputs.kms_crypto_key
   service_project_id = "service-project"
 
   min_node_count    = local.min_node_count
