@@ -30,7 +30,7 @@ variable "labels" {
     troux_id           = string
     cost_centre        = string
     dataclassification = string
-    cmdb_appid         = string
+    cmdb_id.           = string
   })
 }
 
