@@ -1,3 +1,3 @@
 tf-mod-spinnaker:
- source: "git@github.com:a-harland/tf-mod-spi.git"
+ source: "https://github.com/a-harland/tf-mod-spi.git"
  version: "v1.0.0"
