@@ -5,10 +5,18 @@ on:
     branches:
       - master
   pull_request:
+  workflow_dispatch:
+    inputs:
+      env:
+        description: 'Environment to build'
+        required: true
+        default: 'tst'
 
 jobs:
   build:
-    uses: a-harland/tf-native-workflow/.github/workflows/terraform.yml@v1.3.0
+    uses: a-harland/tf-native-workflow/.github/workflows/terraform.yml@v1.4.0
+    with:
+      env: ${{ github.event.inputs.env }}
     secrets:
       GCP_SA_EMAIL: ${{ secrets.GCP_SA_EMAIL }}
       GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
