@@ -14,7 +14,7 @@ on:
 
 jobs:
   build:
-    uses: a-harland/tf-native-workflow/.github/workflows/terraform.yml@v1.5.1
+    uses: a-harland/tf-native-workflow/.github/workflows/terraform.yml@v1.6.0
     with:
       env: "${{ github.event.inputs.env  != '' && github.event.inputs.env || 'tst' }}"
     secrets:
