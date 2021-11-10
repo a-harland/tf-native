@@ -3,17 +3,11 @@ resource "google_service_account" "service_account" {
   display_name = "Service Account"
 }
 
-# resource "google_project_iam_policy" "project" {
-#   project     = var.project_id
-#   policy_data = data.google_iam_policy.admin.policy_data
-# }
+resource "google_project_iam_binding" "project" {
+  project = var.project_id
+  role    = "roles/editor"
 
-# data "google_iam_policy" "admin" {
-#   binding {
-#     role = "roles/editor"
-
-#     members = [
-#       "user:asajharland@gmail.com",
-#     ]
-#   }
-# }
+  members = [
+    "user:asa.harland@e.lloydsbanking.com",
+  ]
+}
