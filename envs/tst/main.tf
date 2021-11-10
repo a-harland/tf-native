@@ -16,7 +16,7 @@ locals {
 module "iam" {
   source               = "../../modules/iam"
   project_id           = data.terraform_remote_state.project.outputs.project_id
-  service_account_name = "spi-sa"
+  service_account_name = "spi-editor"
 }
 
 module "notification" {
