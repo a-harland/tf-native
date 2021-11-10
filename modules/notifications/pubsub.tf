@@ -1,9 +1,9 @@
 resource "google_pubsub_topic" "notifications" {
   project = var.project_id
   name    = "spi-notification-topic-${var.name}"
-#   labels = {
-#     cmdb_id = "al12345"
-#   }
+  labels = {
+    cmdb_id = "al12345"
+  }
 }
 
 resource "google_pubsub_topic_iam_member" "member" {
