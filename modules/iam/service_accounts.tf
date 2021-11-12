@@ -3,11 +3,11 @@ resource "google_service_account" "service_account" {
   display_name = "Service Account"
 }
 
-resource "google_project_iam_binding" "project" {
-  project = var.project_id
-  role    = "roles/editor"
+# resource "google_project_iam_binding" "project" {
+#   project = var.project_id
+#   role    = "roles/editor"
 
-  members = [
-    "user:asa.harland@e.lloydsbanking.com",
-  ]
-}
+#   members = [
+#     "user:asa.harland@e.lloydsbanking.com",
+#   ]
+# }
