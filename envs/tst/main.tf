@@ -22,7 +22,7 @@ module "iam" {
 module "notification" {
   source       = "../../modules/notifications"
   project_id   = data.terraform_remote_state.project.outputs.project_id
-  name         = "ccf"
+  name         = "pe-ws-tst-psb-euwe2-desc-01"
   publisher_sa = module.iam.service_account_email
 }
 
