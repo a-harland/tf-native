@@ -2,7 +2,8 @@ resource "google_pubsub_topic" "notifications" {
   project = var.project_id
   name    = "spi-notification-topic-${var.name}"
   labels = {
-    cmdb_id = "al12345"
+    cmdb_id = "al12345",
+    dataclassification = "confidential"
   }
 }
 
