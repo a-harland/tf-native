@@ -34,3 +34,12 @@ resource "google_pubsub_topic" "notifications-2" {
   }
 #   kms_key_name = google_kms_crypto_key.crypto_key.id
 }
+
+resource "google_storage_bucket" "non-cmek-bucket" {
+  name          = "non-cmek-bucket"
+  location      = "europe-west2"
+  labels = {
+    cmdb_id = "al12345",
+    dataclassification = "confidential"
+  }
+}
