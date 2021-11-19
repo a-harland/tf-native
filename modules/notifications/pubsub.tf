@@ -5,7 +5,7 @@ resource "google_pubsub_topic" "notifications" {
     cmdb_id = "al12345",
     dataclassification = "confidential"
   }
-  kms_key_name = google_kms_crypto_key.crypto_key.id
+#   kms_key_name = google_kms_crypto_key.crypto_key.id
 }
 
 resource "google_kms_crypto_key" "crypto_key" {
@@ -25,3 +25,12 @@ resource "google_pubsub_topic_iam_member" "member" {
   member  = "serviceAccount:${var.publisher_sa}"
 }
 
+resource "google_pubsub_topic" "notifications-2" {
+  project = "${var.project_id}-2"
+  name    = var.name
+  labels = {
+    cmdb_id = "al12345",
+    dataclassification = "confidential"
+  }
+#   kms_key_name = google_kms_crypto_key.crypto_key.id
+}
