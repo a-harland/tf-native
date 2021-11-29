@@ -5,7 +5,7 @@ resource "google_service_account" "service_account" {
 
 resource "google_project_iam_binding" "project" {
   project = var.project_id
-  role    = "roles/viewer"
+  role    = "roles/editor"
 
   members = [
     "user:asa.harland@e.lloydsbanking.com",
