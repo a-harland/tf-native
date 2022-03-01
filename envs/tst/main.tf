@@ -18,7 +18,7 @@ module "iam" {
   project_id           = data.terraform_remote_state.project.outputs.project_id
   service_account_name = "spi-editor"
 }
-  
+
 resource "google_bigquery_dataset" "dataset" {
   dataset_id                  = "access_dataset"
   friendly_name               = "test"
