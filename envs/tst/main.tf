@@ -25,7 +25,7 @@ resource "google_bigquery_dataset" "dataset" {
   description                 = "This is a test description"
   location                    = "europe-west2"
   default_table_expiration_ms = 3600000
-  
+
   labels = {
     owner              = "a-harland"
     troux_id           = "troux"
