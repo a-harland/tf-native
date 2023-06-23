@@ -5,29 +5,46 @@ pipeline:
   orgIdentifier: default
   stages:
     - stage:
-        name: Build
-        identifier: Build
-        type: CI
+        name: Build Archetype
+        identifier: Build_Archetype
+        description: ""
+        type: Custom
         spec:
-          cloneCodebase: true
-          infrastructure:
-            type: KubernetesHosted
-            spec:
-              identifier: k8s-hosted-infra
           execution:
             steps:
               - step:
-                  type: Run
-                  name: Echo Welcome Message
-                  identifier: Echo_Welcome_Message
+                  type: Http
+                  name: Create TFC WS
+                  identifier: Create_TFC_WS
                   spec:
-                    connectorRef: account.harnessImage
-                    image: alpine
-                    shell: Sh
-                    command: echo "Welcome to Harness CI"
-  properties:
-    ci:
-      codebase:
-        connectorRef: account.Github_OAuth_1686339878189
-        repoName: a-harland/tf-native
-        build: <+input>
+                    url: https://app.terraform.io/api/v2
+                    method: POST
+                    headers:
+                      - key: Authorization
+                        value: Bearer t5cenRzzGMGCSg.atlasv1.taTh44pC9v5sil3SCWYrlsOyj0jFuaKQbyFbwpKi0RGEWYrlBD6iSir0KIfAY2b8Qws
+                      - key: Content-Type
+                        value: application/vnd.api+json
+                    inputVariables: []
+                    outputVariables: []
+                    requestBody: |2-
+                              {
+                                  "data": {
+                                      "type": "workspaces",
+                                      "attributes": {
+                                          "name": name,
+                                          "auto-apply": "true",
+                                          "resource-count": "0",
+                                          "speculative-enabled": "false",
+                                          "terraform-version": "~> 1.3.0",
+                                          "working-directory": "",
+                                          "file-triggers-enabled": "true",
+                                          "trigger-patterns": ["no-action-required"],
+                                          "vcs-repo": {
+                                              "identifier":"asaharland/tf-native",
+                                              "branch":"master",
+                                          },
+                                      },
+                                  }
+                              }
+                  timeout: 10s
+        tags: {}
