@@ -21,7 +21,7 @@ pipeline:
                     method: POST
                     headers:
                       - key: Authorization
-                        value: Bearer secret
+                        value: <+secrets.getValue("terr")>
                       - key: Content-Type
                         value: application/vnd.api+json
                     inputVariables: []
@@ -47,4 +47,24 @@ pipeline:
                                   }
                               }
                   timeout: 10s
+              - step:
+                  type: TerraformPlan
+                  name: TF Plan
+                  identifier: TF_Plan
+                  spec:
+                    provisionerIdentifier: qa123
+                    configuration:
+                      command: Apply
+                      configFiles:
+                        store:
+                          spec:
+                            connectorRef: account.Github_OAuth_1686339878189
+                            repoName: asaharland/tf-native
+                            gitFetchType: Branch
+                            branch: master
+                            folderPath: /logs
+                          type: Github
+                      secretManagerRef: My_TF
+                      skipRefreshCommand: false
+                  timeout: 10m
         tags: {}
