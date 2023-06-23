@@ -21,7 +21,7 @@ pipeline:
                     method: POST
                     headers:
                       - key: Authorization
-                        value: Bearer t5cenRzzGMGCSg.atlasv1.taTh44pC9v5sil3SCWYrlsOyj0jFuaKQbyFbwpKi0RGEWYrlBD6iSir0KIfAY2b8Qws
+                        value: Bearer secret
                       - key: Content-Type
                         value: application/vnd.api+json
                     inputVariables: []
