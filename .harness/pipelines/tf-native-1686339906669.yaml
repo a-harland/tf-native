@@ -13,58 +13,40 @@ pipeline:
           execution:
             steps:
               - step:
-                  type: Http
-                  name: Create TFC WS
-                  identifier: Create_TFC_WS
+                  type: ShellScript
+                  name: ShellScript_1
+                  identifier: ShellScript_1
                   spec:
-                    url: https://app.terraform.io/api/v2
-                    method: POST
-                    headers:
-                      - key: Authorization
-                        value: <+secrets.getValue("terr")>
-                      - key: Content-Type
-                        value: application/vnd.api+json
-                    inputVariables: []
+                    shell: Bash
+                    onDelegate: true
+                    source:
+                      type: Inline
+                      spec:
+                        script: echo "create group"
+                    environmentVariables: []
                     outputVariables: []
-                    requestBody: |2-
-                              {
-                                  "data": {
-                                      "type": "workspaces",
-                                      "attributes": {
-                                          "name": name,
-                                          "auto-apply": "true",
-                                          "resource-count": "0",
-                                          "speculative-enabled": "false",
-                                          "terraform-version": "~> 1.3.0",
-                                          "working-directory": "",
-                                          "file-triggers-enabled": "true",
-                                          "trigger-patterns": ["no-action-required"],
-                                          "vcs-repo": {
-                                              "identifier":"asaharland/tf-native",
-                                              "branch":"master",
-                                          },
-                                      },
-                                  }
-                              }
-                  timeout: 10s
+                  timeout: 10m
+        tags: {}
+    - stage:
+        name: create_namespace
+        identifier: create_namespace
+        description: ""
+        type: Custom
+        spec:
+          execution:
+            steps:
               - step:
-                  type: TerraformPlan
-                  name: TF Plan
-                  identifier: TF_Plan
+                  type: ShellScript
+                  name: create_namespace
+                  identifier: create_namespace
                   spec:
-                    provisionerIdentifier: qa123
-                    configuration:
-                      command: Apply
-                      configFiles:
-                        store:
-                          spec:
-                            connectorRef: account.Github_OAuth_1686339878189
-                            repoName: asaharland/tf-native
-                            gitFetchType: Branch
-                            branch: master
-                            folderPath: /logs
-                          type: Github
-                      secretManagerRef: My_TF
-                      skipRefreshCommand: false
+                    shell: Bash
+                    onDelegate: true
+                    source:
+                      type: Inline
+                      spec:
+                        script: exit 1
+                    environmentVariables: []
+                    outputVariables: []
                   timeout: 10m
         tags: {}
