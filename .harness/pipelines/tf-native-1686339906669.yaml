@@ -50,3 +50,16 @@ pipeline:
                     outputVariables: []
                   timeout: 10m
         tags: {}
+    - stage:
+        name: clean_up
+        identifier: clean_up
+        description: ""
+        type: Pipeline
+        spec:
+          org: default
+          pipeline: delete_spa
+          project: default_project
+          outputs: []
+          inputs: {}
+        when:
+          pipelineStatus: Failure
